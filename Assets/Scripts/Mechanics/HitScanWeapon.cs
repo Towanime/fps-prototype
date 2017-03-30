@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GatlingGun : MonoBehaviour {
+public class HitScanWeapon : MonoBehaviour {
 
     public LayerMask targetLayerMask;
     public LayerMask ignoreLayerMask;
@@ -26,6 +26,8 @@ public class GatlingGun : MonoBehaviour {
 
     public Transform camTransform;
     public float range = 400;
+    public float bulletSpreadSize = 0.3f;
+    public float accuracy = 1;
     private float offsetFactor = 0;
 
     void FixedUpdate()
@@ -47,9 +49,6 @@ public class GatlingGun : MonoBehaviour {
         isFiringGun = false;
     }
 
-    public float bulletSpreadSize = 0.3f;
-    public float accuracy = 1;
-
     /// <summary>
     /// Fires a bullet
     /// </summary>
@@ -59,12 +58,11 @@ public class GatlingGun : MonoBehaviour {
         if (!wait)
         {
             Debug.Log("Fired");
-            float offset = offsetFactor;
-            Vector3 startPosition = new Vector3(Random.Range(-offset, offset), Random.Range(-offset, offset), 1);
+            Vector3 startPosition = Vector3.zero;
 
             Vector3 direction = Vector3.Slerp(camTransform.forward, Random.onUnitSphere, Mathf.Lerp(bulletSpreadSize, 0f, accuracy));
 
-            Debug.DrawRay(camTransform.TransformPoint(startPosition), direction.normalized * 10, Color.red, 1);
+            Debug.DrawRay(camTransform.TransformPoint(startPosition), direction.normalized * range, Color.red, 0.5f);
 
             RaycastHit hit;
             if (Physics.Raycast(camTransform.TransformPoint(startPosition), direction, out hit, range, ~ignoreLayerMask))
@@ -74,7 +72,6 @@ public class GatlingGun : MonoBehaviour {
                     Debug.Log("Hit");
                 }
             }
-
 
             // start cooldown
             wait = true;
