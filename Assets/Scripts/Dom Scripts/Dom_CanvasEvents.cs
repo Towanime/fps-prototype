@@ -6,15 +6,14 @@ using UnityEngine.UI;
 public class Dom_CanvasEvents : MonoBehaviour {
 
 	public Dom_Typewriter typeWriter;
+	public Dom_LoadingBar loadingBar;
+	public Image blackBG;
+
 	public float delay = 1f;
-	// Use this for initialization
+
 	void Start () {
+		blackBG.GetComponent<Animator> ().enabled = false;
 		StartCoroutine(BootingDialog ());
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 
 	IEnumerator BootingDialog() {
@@ -38,5 +37,13 @@ public class Dom_CanvasEvents : MonoBehaviour {
 		typeWriter.GetComponent<Text> ().color = Color.white;
 		typeWriter.fullText = "BOOTING...";
 		typeWriter.GetComponent<Text> ().text = typeWriter.fullText;
+		loadingBar.isBooting = true;
+
+		delay = 3f;
+		yield return new WaitForSeconds (delay);
+		blackBG.GetComponent<Animator> ().enabled = true;
+		delay = 6f;
+		yield return new WaitForSeconds (delay);
+		blackBG.GetComponent<Animator> ().enabled = false;
 	}
 }
