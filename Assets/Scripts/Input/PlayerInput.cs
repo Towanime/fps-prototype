@@ -14,6 +14,7 @@ public class PlayerInput : MonoBehaviour
     public Vector3 rawDirection;
     [Tooltip("Rotation from the mouse to apply on the camera.")]
     public Vector3 rotation;
+    public bool synergy;
     public bool shot;
     public bool shooting;
     private Vector3 cameraDirection;
@@ -91,6 +92,7 @@ public class PlayerInput : MonoBehaviour
 
     private void SetActions()
     {
+        this.synergy = Input.GetKey(this.config.synergy);
         this.shooting = Input.GetKey(this.config.shoot);
         this.shot = Input.GetKeyDown(this.config.shoot);
     }    
