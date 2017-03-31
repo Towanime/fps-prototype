@@ -9,7 +9,6 @@ public class SynergyStateMachine : MonoBehaviour {
     public PlayerInput playerInput;
     // other components
     public PlayerMovement playerMovement;
-    public Manipulator manipulationComponent;
     public CameraController cameraController;
     public Animator animator;
     // this should not be here but in a rush!
@@ -43,7 +42,7 @@ public class SynergyStateMachine : MonoBehaviour {
 
     void Idle_Update()
     {
-        bool inSight = manipulationComponent.InSight();
+        /*bool inSight = manipulationComponent.InSight();
         if (inSight)
         {
             manipulatorUi.SetActive(true);
@@ -53,7 +52,7 @@ public class SynergyStateMachine : MonoBehaviour {
         {
             manipulatorUi.SetActive(false);
             attackUi.SetActive(true);
-        }
+        }*/
         /*if (playerInput.disk && disk.CurrentState == DiskStates.Default)
         {
             fsm.ChangeState(PlayerStates.DiskThrow);
@@ -90,22 +89,20 @@ public class SynergyStateMachine : MonoBehaviour {
     void ManipulationMode_Enter()
     {
         playerMovement.Disabled = true;
-        manipulationComponent.Disabled = false;
-        manipulationComponent.Activate();
     }
 
     void ManipulationMode_Update()
     {
-        if (manipulationComponent.IsDone())
+        /*if (manipulationComponent.IsDone())
         {
             fsm.ChangeState(SynergyStates.Default);
-        }
+        }*/
     }
 
     void ManipulationMode_Exit()
     {
-        playerMovement.Disabled = false;
+        /*playerMovement.Disabled = false;
         manipulationComponent.Disabled = true;
-        manipulatorUi.SetActive(false);
+        manipulatorUi.SetActive(false);*/
     }
 }

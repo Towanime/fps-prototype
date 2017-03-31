@@ -14,15 +14,8 @@ public class PlayerInput : MonoBehaviour
     public Vector3 rawDirection;
     [Tooltip("Rotation from the mouse to apply on the camera.")]
     public Vector3 rotation;
-    /// <summary>
-    /// True if the player pressed the attack key in this frame.
-    /// </summary>
-    public bool fire;
-    public bool synergy;
-    public bool crouch;
-    public bool shield;
-    public bool action;
-    public bool gloryKill;
+    public bool shot;
+    public bool shooting;
     private Vector3 cameraDirection;
 
     void Update()
@@ -98,11 +91,7 @@ public class PlayerInput : MonoBehaviour
 
     private void SetActions()
     {
-        this.fire = Input.GetKeyDown(this.config.fire);
-        this.synergy = Input.GetKey(this.config.synergy);
-        this.crouch = Input.GetKeyDown(this.config.crouch);
-        this.shield = Input.GetKey(this.config.shield);
-        this.action = Input.GetKey(this.config.action);
-        this.gloryKill = Input.GetKey(this.config.gloryKill);
-    }
+        this.shooting = Input.GetKey(this.config.shoot);
+        this.shot = Input.GetKeyDown(this.config.shoot);
+    }    
 }
