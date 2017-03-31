@@ -43,11 +43,11 @@ public class Manipulator : MonoBehaviour {
         {
             isDone = false;
             // grow or shrink
-            if (playerInput.attack)
+            if (playerInput.fire)
             {
                 targetComponent.Grow();
                 PlaySfx();
-            }else if (playerInput.disk)
+            }else if (playerInput.synergy)
             {
                 targetComponent.Shrink();
                 PlaySfx();

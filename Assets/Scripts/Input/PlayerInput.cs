@@ -17,10 +17,12 @@ public class PlayerInput : MonoBehaviour
     /// <summary>
     /// True if the player pressed the attack key in this frame.
     /// </summary>
-    public bool attack;
-    public bool disk;
-    public bool architectMode;
-    public bool holdingAction;
+    public bool fire;
+    public bool synergy;
+    public bool crouch;
+    public bool shield;
+    public bool action;
+    public bool gloryKill;
     private Vector3 cameraDirection;
 
     void Update()
@@ -96,9 +98,11 @@ public class PlayerInput : MonoBehaviour
 
     private void SetActions()
     {
-        this.attack = Input.GetKeyDown(this.config.attack);
-        this.disk = Input.GetKeyDown(this.config.disk);
-        this.architectMode = Input.GetKeyDown(this.config.architectMode);
-        this.holdingAction = Input.GetKey(this.config.attack);
-    }    
+        this.fire = Input.GetKeyDown(this.config.fire);
+        this.synergy = Input.GetKey(this.config.synergy);
+        this.crouch = Input.GetKeyDown(this.config.crouch);
+        this.shield = Input.GetKey(this.config.shield);
+        this.action = Input.GetKey(this.config.action);
+        this.gloryKill = Input.GetKey(this.config.gloryKill);
+    }
 }

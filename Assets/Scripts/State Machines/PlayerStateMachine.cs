@@ -54,11 +54,11 @@ public class PlayerStateMachine : MonoBehaviour {
             manipulatorUi.SetActive(false);
             attackUi.SetActive(true);
         }
-        if ((playerInput.attack || playerInput.disk) && inSight)
+        if ((playerInput.fire || playerInput.synergy) && inSight)
         {
             fsm.ChangeState(PlayerStates.ManipulationMode);
         }
-        if (playerInput.attack && !inSight)
+        if (playerInput.fire && !inSight)
         {
             fsm.ChangeState(PlayerStates.Attack);
         }

@@ -43,6 +43,8 @@ public class FirstPersonController : MonoBehaviour
     private bool m_Jumping;
     private AudioSource m_AudioSource;
 
+    public PlayerInput playerInput;
+
     // Use this for initialization
     private void Start()
     {
@@ -109,6 +111,10 @@ public class FirstPersonController : MonoBehaviour
 
         m_MoveDir.x = desiredMove.x*speed;
         m_MoveDir.z = desiredMove.z*speed;
+
+        if (playerInput.synergy) {
+            m_MoveDir.z = desiredMove.z * speed * 4;
+        }
 
 
         if (m_CharacterController.isGrounded)
