@@ -7,15 +7,18 @@ public class Dom_CanvasEvents : MonoBehaviour {
 
 	public Dom_Typewriter typeWriter;
 	public Dom_LoadingBar loadingBar;
-	public GameObject bootText;
+	public Text bootText;
 	public Image blackBG;
+	public Image dialogBox;
 	public Camera fpsCharacterCam;
 
 	public float delay = 1f;
+	public float positionTweak = -20f;
 
 	void Start () {
 		blackBG.GetComponent<Animator> ().enabled = false;
 		fpsCharacterCam.GetComponent<Animator> ().enabled = false;
+		dialogBox.GetComponent<Animator> ().enabled = false;
 
 		StartCoroutine(BootingDialog ());
 	}
@@ -40,9 +43,7 @@ public class Dom_CanvasEvents : MonoBehaviour {
 		yield return new WaitForSeconds (delay);
 		typeWriter.GetComponent<Text> ().color = Color.white;
 
-		//GameObject bootTextTrans = new Vector3 (bootText.GetComponent<RectTransform> (), 0, 0);
-		//bootTextTrans.transform.position.y
-		//trying to set the text 20 px higher
+		bootText.rectTransform.position -= new Vector3 (0, positionTweak, 0);
 
 		typeWriter.fullText = "BOOTING...";
 		typeWriter.GetComponent<Text> ().text = typeWriter.fullText;
@@ -60,8 +61,18 @@ public class Dom_CanvasEvents : MonoBehaviour {
 		yield return new WaitForSeconds (delay);
 		fpsCharacterCam.GetComponent<Animator> ().enabled = false;
 
+		//positionTweak = 0f;
+		bootText.rectTransform.position += new Vector3 (0, positionTweak, 0);
 		typeWriter.fullText = "WELCOME";
 		typeWriter.delay = 0.05f;
 		typeWriter.StartCoroutine ("ShowText");
+		delay = 1f;
+		yield return new WaitForSeconds (delay);
+		bootText.transform.parent = dialogBox.transform;
+		dialogBox.GetComponent<Animator> ().enabled = true;
+		delay = 3f;
+		yield return new WaitForSeconds (delay);
+		dialogBox.GetComponent<Animator> ().enabled = false;
+
 	}
 }
