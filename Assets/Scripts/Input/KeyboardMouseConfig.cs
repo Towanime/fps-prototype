@@ -8,9 +8,7 @@ public class KeyboardMouseConfig : MonoBehaviour
     public KeyCode right;
     public KeyCode forward;
     public KeyCode backwards;
-    public KeyCode attack;
-    public KeyCode disk;
-    public KeyCode architectMode;
+    public KeyCode shoot;
     public bool invertY;
     public float mouseXSensitivity;
     public float mouseYSensitivity;

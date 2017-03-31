@@ -3,81 +3,68 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HitScanWeapon : MonoBehaviour {
+public class HitScanWeapon : Weapon {
 
     public LayerMask targetLayerMask;
     public LayerMask ignoreLayerMask;
 
-    [Tooltip("Offset in coordinates used to randomize the spawn point of the bullet.")]
-    public float bulletSpawnPositionRandomOffset = 0.15f;
-    [Tooltip("Delay between bullets.")]
-    public float fireRate = 0.05f;
-    [Tooltip("Optional bullet speed, this will override the speed on the bullet prefab if overrideBulletSpeed is set to true.")]
-    public float bulletSpeed = 15f;
-    [Tooltip("Multiplier for how fast the overheat should recover when not shooting. Ex: if overheatLimit is 6s, a value of 2 will make it recover in 3s.")]
-    public float recoverRate = 2;
-    // cooldown vars
-    private float currentCooldown;
-    private bool wait;
-    // did it got overheated?
-    private bool isFiringGun = false;
-    private bool lastFiringGun = false;
-    private Vector2 tmp;
-
-    public Transform camTransform;
+    [Tooltip("Origin of the bullet, its forward is used as the aiming direction.")]
+    public Transform aimingTransform;
+    [Tooltip("How far the bullet travels.")]
     public float range = 400;
-    public float bulletSpreadSize = 0.3f;
+    [Tooltip("Maximum range that the aiming can spread from the center.")]
+    public float spreadSize = 0.01f;
+    [Tooltip("Character accuracy, 1 is perfect accuracy to the center of the aiming and 0 is completely random within the range of the spread size.")]
+    [Range(0f, 1f)]
     public float accuracy = 1;
-    private float offsetFactor = 0;
 
-    void FixedUpdate()
+    void Start()
     {
-        if (Input.GetKey(KeyCode.Mouse0))
-        {
-            Fire();
-        }
-        if (wait)
-        {
-            currentCooldown += Time.fixedDeltaTime;
-            // turn off wait if the time is up
-            if (currentCooldown >= fireRate)
-            {
-                wait = false;
-            }
-        }
-        lastFiringGun = isFiringGun;
-        isFiringGun = false;
+        currentBulletCount = magazineSize;
     }
 
-    /// <summary>
-    /// Fires a bullet
-    /// </summary>
-    public bool Fire()
+    public override bool ShootContinuously()
     {
-        isFiringGun = true;
-        if (!wait)
+        if (currentBulletCount <= 0)
         {
-            Debug.Log("Fired");
+            Debug.Log(gameObject + "Needs to reload");
+            return false;
+        }
+
+        if (!waitingFireRateCooldown)
+        {
             Vector3 startPosition = Vector3.zero;
+            Vector3 direction = Vector3.Slerp(aimingTransform.forward, Random.onUnitSphere, Mathf.Lerp(spreadSize, 0f, accuracy));
 
-            Vector3 direction = Vector3.Slerp(camTransform.forward, Random.onUnitSphere, Mathf.Lerp(bulletSpreadSize, 0f, accuracy));
-
-            Debug.DrawRay(camTransform.TransformPoint(startPosition), direction.normalized * range, Color.red, 0.5f);
+            Debug.Log(gameObject + "Fired bullet from hitscan weapon");
+            Debug.DrawRay(aimingTransform.TransformPoint(startPosition), direction.normalized * range, Color.red, 0.5f);
 
             RaycastHit hit;
-            if (Physics.Raycast(camTransform.TransformPoint(startPosition), direction, out hit, range, ~ignoreLayerMask))
+            if (Physics.Raycast(aimingTransform.TransformPoint(startPosition), direction, out hit, range, ~ignoreLayerMask))
             {
-                if (Util.IsObjectInLayerMask(targetLayerMask, hit.transform.gameObject))
+                GameObject other = hit.transform.gameObject;
+                Debug.Log(gameObject + "Bullet from hitscan weapon hit: " + other);
+                DamageableEntity damageableEntity;
+                if (Util.IsObjectInLayerMask(targetLayerMask, other) && 
+                    (damageableEntity = other.GetComponent<DamageableEntity>()) != null)
                 {
-                    Debug.Log("Hit");
+                    Debug.Log(gameObject + "Bullet from hitscan weapon is trying to damage: " + other);
+                    bool damaged = damageableEntity.OnDamage(gameObject, damage);
+                    Debug.Log(gameObject + "Result of bullet damage: " + damaged);
                 }
             }
 
-            // start cooldown
-            wait = true;
-            currentCooldown = 0;
+            waitingFireRateCooldown = true;
+            lastBulletFiredMoment = Time.time;
+            SubstractBullet();
             return true;
         }
+
         return false;
+    }
+
+    public int CurrentBulletCount
+    {
+        get { return currentBulletCount; }
     }
 }

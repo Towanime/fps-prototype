@@ -14,13 +14,8 @@ public class PlayerInput : MonoBehaviour
     public Vector3 rawDirection;
     [Tooltip("Rotation from the mouse to apply on the camera.")]
     public Vector3 rotation;
-    /// <summary>
-    /// True if the player pressed the attack key in this frame.
-    /// </summary>
-    public bool attack;
-    public bool disk;
-    public bool architectMode;
-    public bool holdingAction;
+    public bool shot;
+    public bool shooting;
     private Vector3 cameraDirection;
 
     void Update()
@@ -96,9 +91,7 @@ public class PlayerInput : MonoBehaviour
 
     private void SetActions()
     {
-        this.attack = Input.GetKeyDown(this.config.attack);
-        this.disk = Input.GetKeyDown(this.config.disk);
-        this.architectMode = Input.GetKeyDown(this.config.architectMode);
-        this.holdingAction = Input.GetKey(this.config.attack);
+        this.shooting = Input.GetKey(this.config.shoot);
+        this.shot = Input.GetKeyDown(this.config.shoot);
     }    
 }
