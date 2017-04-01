@@ -5,11 +5,23 @@ using UnityEngine.UI;
 
 public class Dom_CanvasEvents : MonoBehaviour {
 
+	//cutscene
 	public Dom_Typewriter typeWriter;
 	public Dom_LoadingBar loadingBar;
 	public Text bootText;
 	public Image blackBG;
 	public Image dialogBox;
+
+	//UI
+	public Image outerLines;
+	public Image innerLines;
+	public Image healthShell;
+	public Image healthBar;
+	public Image synergyShell;
+	public Image synergyBar;
+	public Image ammoCircle;
+	public Image ammoBullet;
+
 	public Camera fpsCharacterCam;
 
 	public float delay = 1f;
@@ -24,7 +36,7 @@ public class Dom_CanvasEvents : MonoBehaviour {
 	}
 
 	IEnumerator BootingDialog() {
-	
+
 		yield return new WaitForSeconds (delay);
 		typeWriter.fullText = "NEW HARDWARE DETECTED";
 		typeWriter.StartCoroutine ("ShowText");
@@ -61,14 +73,13 @@ public class Dom_CanvasEvents : MonoBehaviour {
 		yield return new WaitForSeconds (delay);
 		fpsCharacterCam.GetComponent<Animator> ().enabled = false;
 
-		//positionTweak = 0f;
 		bootText.rectTransform.position += new Vector3 (0, positionTweak, 0);
 		typeWriter.fullText = "WELCOME";
 		typeWriter.delay = 0.05f;
 		typeWriter.StartCoroutine ("ShowText");
 		delay = 1f;
 		yield return new WaitForSeconds (delay);
-		bootText.transform.parent = dialogBox.transform;
+		bootText.transform.SetParent(dialogBox.transform, false);
 		dialogBox.GetComponent<Animator> ().enabled = true;
 		delay = 3f;
 		yield return new WaitForSeconds (delay);

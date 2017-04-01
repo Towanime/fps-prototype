@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Dom_LoadingBar : MonoBehaviour {
 
 	public bool isBooting = false;
-	new Vector2 loadingBarDimensions;
+	Vector2 loadingBarDimensions;
 	private float maxWidth = 1420f;
 	public float barSpeed = 10f;
 	public float alphaSpeed = 10f;
