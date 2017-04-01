@@ -1,0 +1,187 @@
+fileFormatVersion: 2
+guid: bb314acdadc0ec54b8717ff413253efc
+timeCreated: 1491015323
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Box001
+    100002: Box003
+    100004: Box004
+    100006: Box005
+    100008: Box006
+    100010: //RootNode
+    100012: Crate001
+    100014: Crate002
+    100016: Crate003
+    100018: Hallway piece003
+    100020: Hallway piece005
+    100022: Hallway piece007
+    100024: Lockers
+    100026: Object001
+    100028: other corner
+    100030: penta corner
+    100032: 'Room #1'
+    100034: 'Room #3'
+    100036: 'Room #5'
+    100038: 'Room #6'
+    100040: 'Room #7'
+    100042: Terminal
+    100044: Window Hallway
+    400000: Box001
+    400002: Box003
+    400004: Box004
+    400006: Box005
+    400008: Box006
+    400010: //RootNode
+    400012: Crate001
+    400014: Crate002
+    400016: Crate003
+    400018: Hallway piece003
+    400020: Hallway piece005
+    400022: Hallway piece007
+    400024: Lockers
+    400026: Object001
+    400028: other corner
+    400030: penta corner
+    400032: 'Room #1'
+    400034: 'Room #3'
+    400036: 'Room #5'
+    400038: 'Room #6'
+    400040: 'Room #7'
+    400042: Terminal
+    400044: Window Hallway
+    2300000: Box001
+    2300002: Box003
+    2300004: Box004
+    2300006: Box005
+    2300008: Box006
+    2300010: Crate001
+    2300012: Crate002
+    2300014: Crate003
+    2300016: Hallway piece003
+    2300018: Hallway piece005
+    2300020: Hallway piece007
+    2300022: Lockers
+    2300024: Object001
+    2300026: other corner
+    2300028: penta corner
+    2300030: 'Room #1'
+    2300032: 'Room #3'
+    2300034: 'Room #5'
+    2300036: 'Room #6'
+    2300038: 'Room #7'
+    2300040: Terminal
+    2300042: Window Hallway
+    3300000: Box001
+    3300002: Box003
+    3300004: Box004
+    3300006: Box005
+    3300008: Box006
+    3300010: Crate001
+    3300012: Crate002
+    3300014: Crate003
+    3300016: Hallway piece003
+    3300018: Hallway piece005
+    3300020: Hallway piece007
+    3300022: Lockers
+    3300024: Object001
+    3300026: other corner
+    3300028: penta corner
+    3300030: 'Room #1'
+    3300032: 'Room #3'
+    3300034: 'Room #5'
+    3300036: 'Room #6'
+    3300038: 'Room #7'
+    3300040: Terminal
+    3300042: Window Hallway
+    4300000: Hallway piece003
+    4300002: Window Hallway
+    4300004: penta corner
+    4300006: 'Room #1'
+    4300008: Object001
+    4300010: 'Room #3'
+    4300012: Lockers
+    4300014: Terminal
+    4300016: Hallway piece005
+    4300018: 'Room #5'
+    4300020: Box001
+    4300022: Box003
+    4300024: Box004
+    4300026: Crate001
+    4300028: Crate002
+    4300030: other corner
+    4300032: Hallway piece007
+    4300034: 'Room #6'
+    4300036: Box005
+    4300038: Box006
+    4300040: Crate003
+    4300042: 'Room #7'
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
