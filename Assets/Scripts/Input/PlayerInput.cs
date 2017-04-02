@@ -17,13 +17,11 @@ public class PlayerInput : MonoBehaviour
     public bool synergy;
     public bool shot;
     public bool shooting;
-    private Vector3 cameraDirection;
 
     void Update()
     {
         // update values depending on the input
         this.SetDirection();
-        this.SetRawDirection();
         this.SetRotation();
         this.SetActions();
     }
@@ -32,49 +30,25 @@ public class PlayerInput : MonoBehaviour
     {
         // merge these vars later
         this.direction = Vector3.zero;
-        this.cameraDirection = Vector3.zero;
 
         if (Input.GetKey(this.config.forward))
         {
-            this.cameraDirection += cameraAnchor.transform.forward;
+            this.direction += Vector3.forward;
         }
         else if (Input.GetKey(this.config.backwards))
         {
-            this.cameraDirection -= cameraAnchor.transform.forward;
+            this.direction += Vector3.back;
         }
 
         if (Input.GetKey(this.config.left))
         {
-            this.cameraDirection -= cameraAnchor.transform.right;
+            this.direction += Vector3.left;
         }
         else if (Input.GetKey(this.config.right))
         {
-            this.cameraDirection += cameraAnchor.transform.right;
+            this.direction += Vector3.right;
         }
-        this.direction = this.cameraDirection.normalized;
-    }
-
-    private void SetRawDirection()
-    {
-        // merge these vars later
-        this.rawDirection = Vector3.zero;
-
-        if (Input.GetKey(this.config.forward))
-        {
-            this.rawDirection = cameraAnchor.transform.forward;
-        }
-        else if (Input.GetKey(this.config.backwards))
-        {
-            this.rawDirection -= cameraAnchor.transform.forward;
-        }else if (Input.GetKey(this.config.left))
-        {
-            this.rawDirection -= cameraAnchor.transform.right;
-        }
-        else if (Input.GetKey(this.config.right))
-        {
-            this.rawDirection = cameraAnchor.transform.right;
-        }
-        this.rawDirection = this.rawDirection.normalized;
+        this.direction = this.direction.normalized;
     }
 
     private void SetRotation()

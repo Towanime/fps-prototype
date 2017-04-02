@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityStandardAssets.Characters.FirstPerson;
-using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Utility;
 using Random = UnityEngine.Random;
 
@@ -44,6 +43,9 @@ public class FirstPersonController : MonoBehaviour
     private AudioSource m_AudioSource;
 
     public PlayerInput playerInput;
+
+    private float horizontalInput;
+    private float verticalInput;
 
     // Use this for initialization
     private void Start()
@@ -183,7 +185,6 @@ public class FirstPersonController : MonoBehaviour
         m_FootstepSounds[0] = m_AudioSource.clip;
     }
 
-
     private void UpdateCameraPosition(float speed)
     {
         Vector3 newCameraPosition;
@@ -195,7 +196,6 @@ public class FirstPersonController : MonoBehaviour
         newCameraPosition.y = m_OriginalCameraPosition.y - m_JumpBob.Offset();
         m_Camera.transform.localPosition = newCameraPosition;
     }
-
 
     private void UpdateHeadBobPosition(float speed)
     {
@@ -220,13 +220,14 @@ public class FirstPersonController : MonoBehaviour
         m_HeadBobObject.transform.localPosition = newCameraPosition;
     }
 
+    public void SetInput(float horizontal, float vertical)
+    {
+        this.horizontalInput = horizontal;
+        this.verticalInput = vertical;
+    }
 
     private void GetInput(out float speed)
     {
-        // Read input
-        float horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
-        float vertical = CrossPlatformInputManager.GetAxis("Vertical");
-
         bool waswalking = m_IsWalking;
 
         // On standalone builds, walk/run speed is modified by a key press.
@@ -235,7 +236,7 @@ public class FirstPersonController : MonoBehaviour
 
         // set the desired speed to be walking or running
         speed = m_IsWalking ? m_WalkSpeed : m_RunSpeed;
-        m_Input = new Vector2(horizontal, vertical);
+        m_Input = new Vector2(horizontalInput, verticalInput);
 
         // normalize input if it exceeds 1 in combined length:
         if (m_Input.sqrMagnitude > 1)
