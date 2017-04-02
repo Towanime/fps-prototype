@@ -15,10 +15,10 @@ public class Weapon : MonoBehaviour
 
     protected float lastBulletFiredMoment;
     protected bool waitingFireRateCooldown;
-    protected int currentBulletCount;
+    public int currentBulletCount;
     protected float currentSpreadRange;
 
-    void Update()
+    public virtual void Update()
     {
         if (waitingFireRateCooldown)
         {
