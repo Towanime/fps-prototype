@@ -49,6 +49,11 @@ public class Weapon : MonoBehaviour
         currentBulletCount -= bulletsPerShot;
     }
 
+    public float CurrentBulletCount
+    {
+        get { return currentBulletCount; }
+    }
+
     public float CurrentSpreadRange
     {
         get { return currentSpreadRange; }

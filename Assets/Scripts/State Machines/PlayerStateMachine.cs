@@ -5,28 +5,25 @@ using MonsterLove.StateMachine;
 
 public class PlayerStateMachine : MonoBehaviour {
     
-    StateMachine<PlayerStates> fsm;
     public PlayerInput playerInput;
-
     public Inventory inventory;
+
+    public float reloadingTime = 2f;
+
+    private StateMachine<PlayerStates> fsm;
+    private Coroutine reloadingCoroutine;
 
     void Awake()
     {
-        fsm = StateMachine<PlayerStates>.Initialize(this, PlayerStates.Idle);
+        fsm = StateMachine<PlayerStates>.Initialize(this, PlayerStates.Default);
     }
 
-    void Update()
+    void Default_Update()
     {
-    }
-
-    void Idle_Enter()
-    {
-        
-    }
-
-    void Idle_Update()
-    {
-        if (playerInput.shot)
+        if (inventory.GetCurrentWeapon().CurrentBulletCount <= 0)
+        {
+            fsm.ChangeState(PlayerStates.Reloading);
+        } else if (playerInput.shot)
         {
             inventory.GetCurrentWeapon().ShootOnce();
         } else if (playerInput.shooting)
@@ -35,13 +32,28 @@ public class PlayerStateMachine : MonoBehaviour {
         }
     }
 
-    void Idle_Exit()
+    void Reloading_Enter()
     {
-
+        // start reloading animation
+        reloadingCoroutine = StartCoroutine(ReloadingCoroutine());
     }
 
-    void Shooting_Update()
+    void Reloading_Update()
     {
-        
+        // interrupt reloading if the player performs an action like switch weapon
+        Debug.Log("Player reloading");
+    }
+
+    void Reloading_Exit()
+    {
+        StopCoroutine(reloadingCoroutine);
+    }
+
+    IEnumerator ReloadingCoroutine()
+    {
+        yield return new WaitForSeconds(reloadingTime);
+        Debug.Log("Player reloading finished");
+        inventory.GetCurrentWeapon().Reload();
+        fsm.ChangeState(PlayerStates.Default);
     }
 }
