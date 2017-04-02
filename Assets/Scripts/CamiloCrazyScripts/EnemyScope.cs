@@ -19,33 +19,18 @@ public class EnemyScope : MonoBehaviour {
 	}
 	void Update () {
 		canAttack = false;
-		playerDistance = Vector3.Distance (transform.position, playerPos.position);
-		if (playerDistance <= Range) {
-			checkPlayer ();
-		}
-		if (playerInRange) {
-			tryShoot ();
-		}
+		checkPlayer ();
 		if (canAttack) {
 			myEnemy.PlayerLocated ();
 		} else {
 			myEnemy.PlayerMissing ();
 		}
 	}
-
-	void OnTriggerEnter(Collider other){
-		if (other.tag == "Player")
-			playerInRange = true;
-	}
-
-	void OnTriggerExit(Collider other){
-		if (other.tag == "Player") {
-			playerInRange = false;
-		}
-	}
-
 	void checkPlayer(){
-		transform.LookAt (playerPos);
+		playerDistance = Vector3.Distance (transform.position, playerPos.position);
+		if (playerDistance <= Range) {
+			tryShoot ();
+		}
 	}
 
 	void tryShoot(){
@@ -55,12 +40,19 @@ public class EnemyScope : MonoBehaviour {
 			Dir = playerHitpoints [i].transform.position - transform.position; // setting direction betwwen the initial position of the camera and the player
 			Physics.Raycast (transform.position, Dir, out hit,playerDistance+3);//doing first raycast detecting objects between the player and the camera
 			if (hit.collider.tag == "Player") {
-				Debug.DrawRay(transform.position,Dir);
+				Debug.DrawRay (transform.position, Dir);
 				i = playerHitpoints.Length;
 				canAttack = true;
+			} else {
+				Debug.Log (hit.collider.tag);
 			}
 
 		}
 
+	}
+	void OnTriggerEnter(Collider other){
+		if (other.gameObject.tag == "Player") {
+			myEnemy.PlayerOnTrigger ();
+		}
 	}
 }
