@@ -28,6 +28,11 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    public void Reload()
+    {
+        currentBulletCount = magazineSize;
+    }
+
     public virtual bool ShootOnce()
     {
         return false;

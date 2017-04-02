@@ -7,9 +7,15 @@ public class Crosshair : MonoBehaviour
     public Texture2D crosshairActiveTexture;
     //private GauntletController gauntlet;
 
+    private Texture2D tx2DFlash;
+
     void Start()
     {
-       // gauntlet = GetComponent<GauntletController>();
+        // gauntlet = GetComponent<GauntletController>();
+
+        tx2DFlash = new Texture2D(1, 1); //Creates 2D texture
+        tx2DFlash.SetPixel(1, 1, Color.white); //Sets the 1 pixel to be white
+        tx2DFlash.Apply();
     }
 
     void Update()
@@ -31,8 +37,10 @@ public class Crosshair : MonoBehaviour
         {
             activeTexture = crosshairTexture;
         }*/
-        activeTexture = crosshairTexture;
+        /*activeTexture = crosshairTexture;
         Rect position = new Rect((Screen.width - activeTexture.width) / 2, (Screen.height - activeTexture.height) / 2, activeTexture.width, activeTexture.height);
-        GUI.DrawTexture(position, activeTexture);
+        GUI.DrawTexture(position, activeTexture);*/
+
+        GUI.DrawTexture(new Rect(0, 0, 10, 10), tx2DFlash);
     }
 }
