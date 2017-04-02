@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour {
 	public Transform playerPos;
@@ -18,15 +19,25 @@ public class EnemyScript : MonoBehaviour {
 	private float stateTime;
 	private float shootTime;
 	public float EnemyCode;
-	public Vector3 LastPlayerPos;
 	public float speed;
-	private CharacterController cc;
-	public Vector3 ChargeDir;
+	public float HidingRange;
+	public float stopHidingRange;
+	//private CharacterController cc;
+	private Vector3 LastPlayerPos;
+	private Vector3 ChargeDir;
+	private NavMeshAgent myNav;
+	public GameObject[] hidingPoints;
+	private Vector3 hideSpotPos;
+
 
 	void Start () {		
 		currentState = "none";
 		playerPos = GameObject.FindGameObjectWithTag ("Player").transform;
-		cc = gameObject.GetComponent<CharacterController> ();
+		myNav = gameObject.GetComponent<NavMeshAgent> ();
+		if (EnemyCode == 1) {
+			hidingPoints = GameObject.FindGameObjectsWithTag ("hidingSpot");
+		}
+		//cc = gameObject.GetComponent<CharacterController> ();
 	}
 
 	// Update is called once per frame
@@ -34,7 +45,11 @@ public class EnemyScript : MonoBehaviour {
 		RunStates ();
 	}
 	void RunStates(){
-		if (canAttack && currentState == "isIdling") {
+		playerDistance = Vector3.Distance (playerPos.position, transform.position);
+		if(canAttack && EnemyCode == 1 && playerDistance <= HidingRange){
+			StartGetCover ();
+		}
+		else if (canAttack && currentState == "isIdling") {
 			StartlookPlayer ();
 		} else if (!canAttack && (currentState == "isAttacking" || currentState == "isLooking") && EnemyCode != 2) {
 			StartRandShoot ();
@@ -160,8 +175,16 @@ public class EnemyScript : MonoBehaviour {
 	void StartGetCover(){
 		ResetStates ();
 		currentState = "isGettingCover";
+		float minDistance = 1000;
+		for(int i = 0; i<hidingPoints.Length;i++){
+			if(Vector3.Distance(transform.position, hidingPoints[i].transform.position) < minDistance){
+				hideSpotPos = hidingPoints [i].transform.position;
+				minDistance = Vector3.Distance (transform.position, hidingPoints [i].transform.position);
+			}
+		}
 	}
 	void GetCover(){
+		myNav.SetDestination (hideSpotPos);
 
 	}
 	void StopGetCover(){
@@ -184,7 +207,8 @@ public class EnemyScript : MonoBehaviour {
 	}
 
 	void Charge(){
-		cc.Move (ChargeDir * Time.deltaTime * speed);
+		myNav.SetDestination (LastPlayerPos);
+		//cc.Move (ChargeDir * Time.deltaTime * speed);
 		shootTime += Time.deltaTime;
 		if(shootTime >= shootCd){
 			ChargeDir = Vector3.zero;
