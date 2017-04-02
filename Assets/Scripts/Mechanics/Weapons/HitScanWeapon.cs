@@ -41,10 +41,23 @@ public class HitScanWeapon : Weapon {
     /// </summary>
     private bool consecutiveShooting;
 
+    [Header("Camera Recoil Settings")]
+    public bool useCameraRecoil;
+    public float recoilTime = 0.08f;
+    public float fovModifier = -0.4f;
+    public Camera playerCamera;
+    public AnimationCurve recoilAnimationCurve;
+
+    private float initialFov;
+
     void Start()
     {
         currentBulletCount = magazineSize;
         currentSpreadRange = minSpreadRange;
+        if (useCameraRecoil)
+        {
+            initialFov = playerCamera.fieldOfView;
+        }
     }
 
     public override void Update()
@@ -52,7 +65,17 @@ public class HitScanWeapon : Weapon {
         UpdateConsecutiveShootingValue();
         DecreaseConsecutiveShootingTime();
         UpdateCurrentSpreadRange();
+        if (useCameraRecoil)
+        {
+            UpdateCameraRecoil();
+        }
         base.Update();
+    }
+
+    private void UpdateCameraRecoil()
+    {
+        float t = recoilAnimationCurve.Evaluate((Time.time - lastBulletFiredMoment) / recoilTime);
+        playerCamera.fieldOfView = Mathf.Lerp(initialFov, initialFov + fovModifier, t);
     }
 
     private void UpdateConsecutiveShootingValue()
@@ -137,7 +160,7 @@ public class HitScanWeapon : Weapon {
         Debug.Log(gameObject + "Bullet from hitscan weapon hit: " + other);
         if (bulletContactPointPrefab != null)
         {
-            Instantiate(bulletContactPointPrefab, hit.point, Quaternion.Euler(0, 0, 0), other.transform);
+            Instantiate(bulletContactPointPrefab, hit.point, Quaternion.Euler(0, 0, 0));
         }
         DamageableEntity damageableEntity;
         if (Util.IsObjectInLayerMask(targetLayerMask, other) &&
@@ -147,10 +170,5 @@ public class HitScanWeapon : Weapon {
             bool damaged = damageableEntity.OnDamage(gameObject, damage);
             Debug.Log(gameObject + "Result of bullet damage: " + damaged);
         }
-    }
-
-    public int CurrentBulletCount
-    {
-        get { return currentBulletCount; }
     }
 }

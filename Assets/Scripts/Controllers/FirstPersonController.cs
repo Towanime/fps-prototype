@@ -61,17 +61,15 @@ public class FirstPersonController : MonoBehaviour
 		m_MouseLook.Init(transform , m_Camera.transform);
     }
 
+    public void Jump()
+    {
+        m_Jump = true;
+    }
 
     // Update is called once per frame
     private void Update()
     {
         RotateView();
-        // the jump state needs to read here to make sure it is not missed
-        if (!m_Jump)
-        {
-            m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
-        }
-
         if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
         {
             StartCoroutine(m_JumpBob.DoBobCycle());
