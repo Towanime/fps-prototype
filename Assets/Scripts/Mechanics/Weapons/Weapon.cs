@@ -16,6 +16,7 @@ public class Weapon : MonoBehaviour
     protected float lastBulletFiredMoment;
     protected bool waitingFireRateCooldown;
     protected int currentBulletCount;
+    protected float currentSpreadRange;
 
     void Update()
     {
@@ -46,5 +47,10 @@ public class Weapon : MonoBehaviour
     public virtual void SubstractBullet()
     {
         currentBulletCount -= bulletsPerShot;
+    }
+
+    public float CurrentSpreadRange
+    {
+        get { return currentSpreadRange; }
     }
 }

@@ -13,7 +13,8 @@ public class HitScanWeapon : Weapon {
     [Tooltip("How far the bullet travels.")]
     public float range = 400;
     [Tooltip("Maximum range that the aiming can spread from the center.")]
-    public float spreadSize = 0.01f;
+    [Range(0f, 1f)]
+    public float spreadRange = 0.003f;
     [Tooltip("Character accuracy, 1 is perfect accuracy to the center of the aiming and 0 is completely random within the range of the spread size.")]
     [Range(0f, 1f)]
     public float accuracy = 1;
@@ -21,6 +22,7 @@ public class HitScanWeapon : Weapon {
     void Start()
     {
         currentBulletCount = magazineSize;
+        currentSpreadRange = spreadRange;
     }
 
     public override bool ShootContinuously()
@@ -34,7 +36,7 @@ public class HitScanWeapon : Weapon {
         if (!waitingFireRateCooldown)
         {
             Vector3 startPosition = Vector3.zero;
-            Vector3 direction = Vector3.Slerp(aimingTransform.forward, Random.onUnitSphere, Mathf.Lerp(spreadSize, 0f, accuracy));
+            Vector3 direction = Vector3.Slerp(aimingTransform.forward, Random.onUnitSphere, Mathf.Lerp(currentSpreadRange, 0f, accuracy));
 
             Debug.Log(gameObject + "Fired bullet from hitscan weapon");
             Debug.DrawRay(aimingTransform.TransformPoint(startPosition), direction.normalized * range, Color.red, 0.5f);
