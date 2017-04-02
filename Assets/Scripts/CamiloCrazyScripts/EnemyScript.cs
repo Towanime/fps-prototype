@@ -15,45 +15,35 @@ public class EnemyScript : MonoBehaviour {
 	public float startShootCd;
 	public float shootCd;
 	public float stopShootCd;
-	public float stateTime;
+	private float stateTime;
+	private float shootTime;
+	public float EnemyCode;
+	public Vector3 LastPlayerPos;
+	public float speed;
+	private CharacterController cc;
+	public Vector3 ChargeDir;
 
 	void Start () {		
 		currentState = "none";
 		playerPos = GameObject.FindGameObjectWithTag ("Player").transform;
+		cc = gameObject.GetComponent<CharacterController> ();
 	}
 
 	// Update is called once per frame
 	void Update () {
 		RunStates ();
-		if (canAttack) {
-			Vector3 Direction = playerPos.position - transform.position;
-			rotation = Quaternion.LookRotation (Direction);
-			transform.rotation = Quaternion.Slerp (transform.rotation, rotation, Time.deltaTime * rotationSpeed);
-		}
 	}
 	void RunStates(){
-		
-		/*if (currentState == "isInsideOrb") {
-			Orb ();
-		}
-		else if (timeScared > ScareCooldown && EnemyCode == 1 && currentState == "isGettingFear" && currentState !="isGettingHit" ) {
-			startGetScare ();
-		}
-		else if(currentState == "isIdling" && DogDistance <= attackRange && currentState != "isGettingFear" && vMoving){
-			StartAttack ();
-		}
-		//Walk
-		else if ( currentState == "isIdling" && DogDistance > attackRange && vMoving) {
-			StartWalk ();
-		}
-		//Idle
-		else 
-*/
-		if (currentState == "none")
-			StartIdle();
-		//Run ongoing states 8===D
+		if (canAttack && currentState == "isIdling") {
+			StartlookPlayer ();
+		} else if (!canAttack && (currentState == "isAttacking" || currentState == "isLooking") && EnemyCode != 2) {
+			StartRandShoot ();
+			}
+			else if (currentState == "none")
+				StartIdle();
+		//Run ongoing states
 		switch (currentState) {
-		case "isStopRandShoot":  	StopRandShoot ();	break;
+		case "isShootingRand":  	RandShoot ();		break;
 		case "isGettingHit":  		GetHit (); 			break;
 		case "isAttacking":  		Attack (); 			break;
 		case "isLooking":  			lookPlayer (); 		break;
@@ -68,6 +58,8 @@ public class EnemyScript : MonoBehaviour {
 		StopMove ();
 		StopGetHit ();
 		StopGetCover ();
+		stateTime = 0f;
+		shootTime = 0f;
 	}
 	//Idle
 
@@ -99,11 +91,15 @@ public class EnemyScript : MonoBehaviour {
 	void StartlookPlayer(){
 		ResetStates ();
 		currentState = "isLooking";
-		stateTime = 0f;
 	}
 	void lookPlayer(){
+		LookAtPlayer ();
 		stateTime += Time.deltaTime;
 		if (stateTime >= startShootCd) {
+			if (EnemyCode == 2) {
+				LastPlayerPos = playerPos.position;
+				ChargeDir = LastPlayerPos - transform.position;
+			}
 			StartAttack ();
 		}
 	}
@@ -115,14 +111,18 @@ public class EnemyScript : MonoBehaviour {
 	void StartAttack(){
 		ResetStates ();
 		currentState = "isAttacking";
-		stateTime = 0f;
 	}
 	void Attack(){
-		stateTime += Time.deltaTime;
-		if (stateTime >= shootCd) {
-			//cast shoot and animation
-			stateTime = 0f;
-		} 
+		if (EnemyCode == 1) {
+			LookAtPlayer ();
+			Shoot ();
+		}
+		if(EnemyCode == 2)
+			Charge ();
+		if (EnemyCode == 3) {
+			LookAtPlayer ();
+			ShootBall ();
+		}
 	}
 	void StopAttack(){
 		currentState = "none";
@@ -130,13 +130,12 @@ public class EnemyScript : MonoBehaviour {
 	//Random Attack when missing Player
 	void StartRandShoot(){
 		ResetStates ();
-		currentState = "isStopRandShoot";
-		stateTime = 0f;
+		currentState = "isShootingRand";
 	}
 	void RandShoot(){
 		stateTime += Time.deltaTime;
+		Shoot ();
 		if (stateTime >= stopShootCd) {
-			//cast shoot and animation
 			StopRandShoot();
 		} 
 	}
@@ -175,18 +174,47 @@ public class EnemyScript : MonoBehaviour {
 		transform.rotation = Quaternion.Slerp (transform.rotation, rotation, Time.deltaTime * rotationSpeed);
 	}
 
-	//Public functions
-	public void PlayerLocated(){
-		if (!canAttack) {
-			StartlookPlayer ();
-			canAttack = true;
+	//Shoot function
+	void Shoot(){
+		shootTime += Time.deltaTime;
+		if(shootTime >= shootCd){
+			//cast shoot and animation
+			shootTime = 0f;
 		}
 	}
-	public void PlayerMissing(){
-		if (canAttack) {
-			canAttack = false;
-			StartRandShoot ();
+
+	void Charge(){
+		cc.Move (ChargeDir * Time.deltaTime * speed);
+		shootTime += Time.deltaTime;
+		if(shootTime >= shootCd){
+			ChargeDir = Vector3.zero;
+			StopAttack ();
 		}
+	}
+
+
+	void ShootBall(){
+		shootTime += Time.deltaTime;
+		if(shootTime >= shootCd){
+			//cast shoot and animation
+			shootTime = 0f;
+		}
+	}
+	//stare the player
+	void LookAtPlayer(){
+			Vector3 Direction = playerPos.position - transform.position;
+			rotation = Quaternion.LookRotation (Direction);
+			transform.rotation = Quaternion.Slerp (transform.rotation, rotation, Time.deltaTime * rotationSpeed);
+	}
+	//Public functions
+	public void PlayerLocated(){
+			canAttack = true;
+	}
+	public void PlayerMissing(){
+			canAttack = false;
+	}
+	public void PlayerOnTrigger(){
+		StopAttack ();
 	}
 }
 
