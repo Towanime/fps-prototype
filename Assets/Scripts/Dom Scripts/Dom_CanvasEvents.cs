@@ -5,20 +5,38 @@ using UnityEngine.UI;
 
 public class Dom_CanvasEvents : MonoBehaviour {
 
+	//cutscene
 	public Dom_Typewriter typeWriter;
+	public Dom_LoadingBar loadingBar;
+	public Text bootText;
+	public Image blackBG;
+	public Image dialogBox;
+
+	//UI
+	public Image outerLines;
+	public Image innerLines;
+	public Image healthShell;
+	public Image healthBar;
+	public Image synergyShell;
+	public Image synergyBar;
+	public Image ammoCircle;
+	public Image ammoBullet;
+
+	public Camera fpsCharacterCam;
+
 	public float delay = 1f;
-	// Use this for initialization
+	public float positionTweak = -20f;
+
 	void Start () {
+		blackBG.GetComponent<Animator> ().enabled = false;
+		fpsCharacterCam.GetComponent<Animator> ().enabled = false;
+		dialogBox.GetComponent<Animator> ().enabled = false;
+
 		StartCoroutine(BootingDialog ());
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 
 	IEnumerator BootingDialog() {
-	
+
 		yield return new WaitForSeconds (delay);
 		typeWriter.fullText = "NEW HARDWARE DETECTED";
 		typeWriter.StartCoroutine ("ShowText");
@@ -36,7 +54,36 @@ public class Dom_CanvasEvents : MonoBehaviour {
 		delay = 6f;
 		yield return new WaitForSeconds (delay);
 		typeWriter.GetComponent<Text> ().color = Color.white;
+
+		bootText.rectTransform.position -= new Vector3 (0, positionTweak, 0);
+
 		typeWriter.fullText = "BOOTING...";
 		typeWriter.GetComponent<Text> ().text = typeWriter.fullText;
+		loadingBar.isBooting = true;
+
+		delay = 3f;
+		yield return new WaitForSeconds (delay);
+		blackBG.GetComponent<Animator> ().enabled = true;
+		delay = 6f;
+		yield return new WaitForSeconds (delay);
+		blackBG.GetComponent<Animator> ().enabled = false;
+
+		fpsCharacterCam.GetComponent<Animator> ().enabled = true;
+		delay = 5f;
+		yield return new WaitForSeconds (delay);
+		fpsCharacterCam.GetComponent<Animator> ().enabled = false;
+
+		bootText.rectTransform.position += new Vector3 (0, positionTweak, 0);
+		typeWriter.fullText = "WELCOME";
+		typeWriter.delay = 0.05f;
+		typeWriter.StartCoroutine ("ShowText");
+		delay = 1f;
+		yield return new WaitForSeconds (delay);
+		bootText.transform.SetParent(dialogBox.transform, false);
+		dialogBox.GetComponent<Animator> ().enabled = true;
+		delay = 3f;
+		yield return new WaitForSeconds (delay);
+		dialogBox.GetComponent<Animator> ().enabled = false;
+
 	}
 }
