@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Dom_Typewriter : MonoBehaviour {
+public class Typewriter : MonoBehaviour {
 
 	public float delay = 0.1f;
 	public string fullText;
 	public string currentText = "";
-	// Use this for initialization
-	void Start () {
-		//StartCoroutine (ShowText ());
-	}
 
 	IEnumerator ShowText(){
 		for (int i = 0; i < fullText.Length+1; i++) {

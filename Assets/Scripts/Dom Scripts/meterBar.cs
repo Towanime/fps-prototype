@@ -11,12 +11,6 @@ public class meterBar : MonoBehaviour {
 	public float meterTextAdjust;
 	public string meterTextMax;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
 	void Update () {
 
 		this.GetComponent<Image> ().fillAmount = meterAmount;

@@ -3,24 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Dom_CanvasEvents : MonoBehaviour {
+public class CanvasEvents : MonoBehaviour {
 
 	//cutscene
-	public Dom_Typewriter typeWriter;
-	public Dom_LoadingBar loadingBar;
+	public Typewriter typeWriter;
+	public LoadingBar loadingBar;
 	public Text bootText;
 	public Image blackBG;
 	public Image dialogBox;
-
-	//UI
-	public Image outerLines;
-	public Image innerLines;
-	public Image healthShell;
-	public Image healthBar;
-	public Image synergyShell;
-	public Image synergyBar;
-	public Image ammoCircle;
-	public Image ammoBullet;
 
 	public Camera fpsCharacterCam;
 
@@ -31,12 +21,13 @@ public class Dom_CanvasEvents : MonoBehaviour {
 		blackBG.GetComponent<Animator> ().enabled = false;
 		fpsCharacterCam.GetComponent<Animator> ().enabled = false;
 		dialogBox.GetComponent<Animator> ().enabled = false;
+		bootText.GetComponent<Animator> ().enabled = false;
 
 		StartCoroutine(BootingDialog ());
 	}
 
 	IEnumerator BootingDialog() {
-
+		
 		yield return new WaitForSeconds (delay);
 		typeWriter.fullText = "NEW HARDWARE DETECTED";
 		typeWriter.StartCoroutine ("ShowText");
@@ -53,6 +44,7 @@ public class Dom_CanvasEvents : MonoBehaviour {
 
 		delay = 6f;
 		yield return new WaitForSeconds (delay);
+
 		typeWriter.GetComponent<Text> ().color = Color.white;
 
 		bootText.rectTransform.position -= new Vector3 (0, positionTweak, 0);
@@ -79,11 +71,12 @@ public class Dom_CanvasEvents : MonoBehaviour {
 		typeWriter.StartCoroutine ("ShowText");
 		delay = 1f;
 		yield return new WaitForSeconds (delay);
-		bootText.transform.SetParent(dialogBox.transform, false);
 		dialogBox.GetComponent<Animator> ().enabled = true;
+		bootText.GetComponent<Animator> ().enabled = true;
 		delay = 3f;
 		yield return new WaitForSeconds (delay);
 		dialogBox.GetComponent<Animator> ().enabled = false;
+		bootText.GetComponent<Animator> ().enabled = false;
 
 	}
 }

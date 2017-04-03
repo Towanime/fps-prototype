@@ -3,21 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Dom_LoadingBar : MonoBehaviour {
+public class LoadingBar : MonoBehaviour {
 
 	public bool isBooting = false;
-	Vector2 loadingBarDimensions;
+	public Vector2 loadingBarDimensions;
 	private float maxWidth = 1420f;
 	public float barSpeed = 10f;
 	public float alphaSpeed = 10f;
 
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
 	void Update () {
 
 		loadingBarDimensions = new Vector2 (this.GetComponent<RectTransform> ().sizeDelta.x, this.GetComponent<RectTransform> ().sizeDelta.y);
