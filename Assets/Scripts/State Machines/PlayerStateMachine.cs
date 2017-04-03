@@ -11,11 +11,18 @@ public class PlayerStateMachine : MonoBehaviour {
     public float reloadingTime = 2f;
 
     private StateMachine<PlayerStates> fsm;
+    private StateMachine<MovementStates> movementStateMachine;
     private Coroutine reloadingCoroutine;
 
     void Awake()
     {
+        movementStateMachine = GetComponent<MovementStateMachine>().StateMachine;
         fsm = StateMachine<PlayerStates>.Initialize(this, PlayerStates.Default);
+    }
+
+    void Default_Enter()
+    {
+        movementStateMachine.ChangeState(MovementStates.Default);
     }
 
     void Default_Update()
