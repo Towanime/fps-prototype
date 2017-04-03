@@ -17,6 +17,7 @@ public class PlayerInput : MonoBehaviour
     public bool synergy;
     public bool shot;
     public bool shooting;
+    public bool crouching;
 
     void Update()
     {
@@ -69,5 +70,6 @@ public class PlayerInput : MonoBehaviour
         this.synergy = Input.GetKey(this.config.synergy);
         this.shooting = Input.GetKey(this.config.shoot);
         this.shot = Input.GetKeyDown(this.config.shoot);
+        this.crouching = Input.GetKey(this.config.crouch);
     }    
 }

@@ -46,6 +46,11 @@ public class FirstPersonController : MonoBehaviour
 
     private float horizontalInput;
     private float verticalInput;
+    private bool crouching;
+
+    private float crouchingHeightDifference = 0.8f;
+    private float crouchingSpeed = 5f;
+    private float originalHeight;
 
     // Use this for initialization
     private void Start()
@@ -61,6 +66,7 @@ public class FirstPersonController : MonoBehaviour
         m_Jumping = false;
         m_AudioSource = GetComponent<AudioSource>();
 		m_MouseLook.Init(transform , m_Camera.transform);
+        originalHeight = m_CharacterController.height;
     }
 
     public void Jump()
@@ -85,8 +91,29 @@ public class FirstPersonController : MonoBehaviour
         }
 
         m_PreviouslyGrounded = m_CharacterController.isGrounded;
+        UpdateCrouching();
     }
 
+    private void UpdateCrouching()
+    {
+        float mod = crouchingSpeed * Time.deltaTime;
+        if (crouching)
+        {
+            mod *= -1;
+        }
+        // Adjust height
+        float oldHeight = m_CharacterController.height;
+        float newHeight = Mathf.Clamp(m_CharacterController.height + mod, originalHeight - crouchingHeightDifference, originalHeight);
+        m_CharacterController.height = newHeight;
+        // Adjust position
+        Vector3 position = transform.position;
+        position.y -= (oldHeight - newHeight) / 2;
+        transform.position = position;
+
+        currentCrouchingHeightDifference = originalHeight - m_CharacterController.height;
+    }
+
+    private float currentCrouchingHeightDifference;
 
     private void PlayLandingSound()
     {
@@ -136,7 +163,7 @@ public class FirstPersonController : MonoBehaviour
         m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
 
         ProgressStepCycle(speed);
-        UpdateCameraPosition(speed);
+        UpdateCameraPosition();
         UpdateHeadBobPosition(speed);
 
         m_MouseLook.UpdateCursorLock();
@@ -185,15 +212,15 @@ public class FirstPersonController : MonoBehaviour
         m_FootstepSounds[0] = m_AudioSource.clip;
     }
 
-    private void UpdateCameraPosition(float speed)
+    private void UpdateCameraPosition()
     {
         Vector3 newCameraPosition;
-        if (!m_UseHeadBob)
-        {
-            return;
-        }
         newCameraPosition = m_Camera.transform.localPosition;
-        newCameraPosition.y = m_OriginalCameraPosition.y - m_JumpBob.Offset();
+        newCameraPosition.y = m_OriginalCameraPosition.y - currentCrouchingHeightDifference / 2;
+        if (m_UseHeadBob)
+        {
+            newCameraPosition.y -= m_JumpBob.Offset();
+        }
         m_Camera.transform.localPosition = newCameraPosition;
     }
 
@@ -220,10 +247,11 @@ public class FirstPersonController : MonoBehaviour
         m_HeadBobObject.transform.localPosition = newCameraPosition;
     }
 
-    public void SetInput(float horizontal, float vertical)
+    public void SetInput(float horizontal, float vertical, bool crouching)
     {
         this.horizontalInput = horizontal;
         this.verticalInput = vertical;
+        this.crouching = crouching;
     }
 
     private void GetInput(out float speed)
