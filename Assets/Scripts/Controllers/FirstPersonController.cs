@@ -11,6 +11,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private bool m_IsWalking;
     [SerializeField] private float m_WalkSpeed;
     [SerializeField] private float m_RunSpeed;
+    [SerializeField] private float m_CrouchSpeed;
     [SerializeField] [Range(0f, 1f)] private float m_RunstepLenghten;
     [SerializeField] private float m_JumpSpeed;
     [SerializeField] private float m_StickToGroundForce;
@@ -44,8 +45,20 @@ public class FirstPersonController : MonoBehaviour
 
     public PlayerInput playerInput;
 
+    [Tooltip("Difference in height between the character standing and the character crouching.")]
+    public float crouchingHeightDifference = 0.8f;
+    [Tooltip("How much height is added/reduced every frame when crouching/standing up.")]
+    public float speedToCrouch = 5f;
+
+    // Input
     private float horizontalInput;
     private float verticalInput;
+    private bool crouching;
+
+    // Character original height
+    private float originalHeight;
+    // Current difference in height between the character original height and its current height
+    private float currentCrouchingHeightDifference;
 
     // Use this for initialization
     private void Start()
@@ -61,6 +74,7 @@ public class FirstPersonController : MonoBehaviour
         m_Jumping = false;
         m_AudioSource = GetComponent<AudioSource>();
 		m_MouseLook.Init(transform , m_Camera.transform);
+        originalHeight = m_CharacterController.height;
     }
 
     public void Jump()
@@ -85,8 +99,29 @@ public class FirstPersonController : MonoBehaviour
         }
 
         m_PreviouslyGrounded = m_CharacterController.isGrounded;
+        UpdateCrouching();
     }
 
+    private void UpdateCrouching()
+    {
+        // Adjust height
+        float heightModifier = speedToCrouch * Time.deltaTime;
+        if (crouching)
+        {
+            heightModifier *= -1;
+        }
+        float oldHeight = m_CharacterController.height;
+        float newHeight = Mathf.Clamp(oldHeight + heightModifier, originalHeight - crouchingHeightDifference, originalHeight);
+        m_CharacterController.height = newHeight;
+
+        // Adjust position
+        Vector3 position = transform.position;
+        position.y -= (oldHeight - newHeight) / 2;
+        transform.position = position;
+
+        // Update current height difference
+        currentCrouchingHeightDifference = originalHeight - m_CharacterController.height;
+    }
 
     private void PlayLandingSound()
     {
@@ -136,7 +171,7 @@ public class FirstPersonController : MonoBehaviour
         m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
 
         ProgressStepCycle(speed);
-        UpdateCameraPosition(speed);
+        UpdateCameraPosition();
         UpdateHeadBobPosition(speed);
 
         m_MouseLook.UpdateCursorLock();
@@ -185,15 +220,15 @@ public class FirstPersonController : MonoBehaviour
         m_FootstepSounds[0] = m_AudioSource.clip;
     }
 
-    private void UpdateCameraPosition(float speed)
+    private void UpdateCameraPosition()
     {
         Vector3 newCameraPosition;
-        if (!m_UseHeadBob)
-        {
-            return;
-        }
         newCameraPosition = m_Camera.transform.localPosition;
-        newCameraPosition.y = m_OriginalCameraPosition.y - m_JumpBob.Offset();
+        newCameraPosition.y = m_OriginalCameraPosition.y - currentCrouchingHeightDifference / 2;
+        if (m_UseHeadBob)
+        {
+            newCameraPosition.y -= m_JumpBob.Offset();
+        }
         m_Camera.transform.localPosition = newCameraPosition;
     }
 
@@ -220,10 +255,11 @@ public class FirstPersonController : MonoBehaviour
         m_HeadBobObject.transform.localPosition = newCameraPosition;
     }
 
-    public void SetInput(float horizontal, float vertical)
+    public void SetInput(float horizontal, float vertical, bool crouching)
     {
         this.horizontalInput = horizontal;
         this.verticalInput = vertical;
+        this.crouching = crouching;
     }
 
     private void GetInput(out float speed)
@@ -235,7 +271,7 @@ public class FirstPersonController : MonoBehaviour
         m_IsWalking = !Input.GetKey(KeyCode.LeftShift);
 
         // set the desired speed to be walking or running
-        speed = m_IsWalking ? m_WalkSpeed : m_RunSpeed;
+        speed = crouching ? m_CrouchSpeed : m_IsWalking ? m_WalkSpeed : m_RunSpeed;
         m_Input = new Vector2(horizontalInput, verticalInput);
 
         // normalize input if it exceeds 1 in combined length:
