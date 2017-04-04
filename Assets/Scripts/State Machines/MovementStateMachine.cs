@@ -12,7 +12,7 @@ public class MovementStateMachine : MonoBehaviour {
 
     void Default_Update()
     {
-        firstPersonController.SetInput(playerInput.direction.x, playerInput.direction.z);
+        firstPersonController.SetInput(playerInput.direction.x, playerInput.direction.z, playerInput.crouching);
     }
 
     public StateMachine<MovementStates> StateMachine
