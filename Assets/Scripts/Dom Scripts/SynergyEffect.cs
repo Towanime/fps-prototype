@@ -9,6 +9,7 @@ public class SynergyEffect : MonoBehaviour {
 	public void SynergyEffectTrigger() {
 		
 		if (animationManager.synergyActive == true) {
+			
 			animationManager.outerLinesLeft.GetComponent<Animator> ().speed = 0f;
 			animationManager.outerLinesRight.GetComponent<Animator> ().speed = 0f;
 			animationManager.outerLinesTopLeft.GetComponent<Animator> ().speed = 0f;

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class AnimationsManager : MonoBehaviour {
 
+	public bool introActive = true;
 	public bool synergyActive = false;
 
 	public LoadingBar loadingBar;
@@ -46,23 +47,35 @@ public class AnimationsManager : MonoBehaviour {
 		}
 
 		//Bottom Left
-		if (loadingBar.loadingBarDimensions.x >= 800f && outerLinesLeft.GetComponent<Animator>().speed == 0){
+		if (loadingBar.loadingBarDimensions.x >= 800f && /*outerLinesLeft.GetComponent<Animator>().speed == 0 &&*/ introActive == true){
 			
 			outerLinesLeft.GetComponent<Animator>().speed = 1;
+			if (outerLinesLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesLeftIdle")) {
+				introActive = false;
+			}
 		}
-		if (loadingBar.loadingBarDimensions.x <= 1420f && outerLinesLeft.GetComponent<Animator>().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesLeftIdle")) {
 
-			outerLinesLeft.GetComponent<Animator> ().speed = 0;
-			outerLinesLeft.GetComponent<Animator> ().Play ("OuterLinesLeftIdle", 0, 0);
-		} else if (loadingBar.loadingBarDimensions.x >= 1420f){
-			
-			outerLinesLeft.GetComponent<Animator> ().speed = 1;
-		}
 		if (synergyActive == false && outerLinesLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesLeftSyn")) {
 
 			outerLinesLeft.GetComponent<Animator> ().speed = 0;
 			outerLinesLeft.GetComponent<Animator> ().Play ("OuterLinesLeftSyn", 0, 0);
 		}
+
+		if (loadingBar.loadingBarDimensions.x <= 1420f && outerLinesLeft.GetComponent<Animator>().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesLeftIdle")) {
+
+			outerLinesLeft.GetComponent<Animator> ().speed = 0;
+			outerLinesLeft.GetComponent<Animator> ().Play ("OuterLinesLeftIdle", 0, 0);
+		} else if (loadingBar.loadingBarDimensions.x >= 1420f && synergyActive == false){
+			
+			outerLinesLeft.GetComponent<Animator> ().speed = 1;
+			Debug.Log ("asdas");
+		}
+
+
+
+
+
+
 		//Bottom Right
 		if (loadingBar.loadingBarDimensions.x >= 800f && outerLinesRight.GetComponent<Animator>().speed == 0){
 
