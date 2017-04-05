@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class AnimationsManager : MonoBehaviour {
 
-	public bool introActive = true;
+	public int introActiveBot = 1;
+	public int introActiveTop = 1;
+	public int introActiveInTop = 1;
 	public bool synergyActive = false;
 
 	public LoadingBar loadingBar;
@@ -34,7 +36,7 @@ public class AnimationsManager : MonoBehaviour {
 
 	void Update () {
 
-		if (synergyActive == false && ammoCircle.GetComponent<Animator> ().enabled == false) {
+		if (synergyActive == false && ammoCircle.GetComponent<Animator> ().enabled == false && introActiveBot < 3) {
 			outerLinesLeft.GetComponent<Animator> ().speed = 1;
 			outerLinesRight.GetComponent<Animator> ().speed = 1;
 			outerLinesTopLeft.GetComponent<Animator> ().speed = 1;
@@ -45,131 +47,146 @@ public class AnimationsManager : MonoBehaviour {
 			synergyShell.GetComponent<Animator> ().speed = 1;
 			ammoCircle.GetComponent<Animator> ().speed = 1;
 		}
-
-		//Bottom Left
-		if (loadingBar.loadingBarDimensions.x >= 800f && /*outerLinesLeft.GetComponent<Animator>().speed == 0 &&*/ introActive == true){
+		//Bottom Lines
+		if (loadingBar.loadingBarDimensions.x >= 800f && introActiveBot == 1){
 			
 			outerLinesLeft.GetComponent<Animator>().speed = 1;
+			outerLinesRight.GetComponent<Animator>().speed = 1;
 			if (outerLinesLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesLeftIdle")) {
-				introActive = false;
+				introActiveBot = 2;
 			}
 		}
 
-		if (synergyActive == false && outerLinesLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesLeftSyn")) {
-
-			outerLinesLeft.GetComponent<Animator> ().speed = 0;
-			outerLinesLeft.GetComponent<Animator> ().Play ("OuterLinesLeftSyn", 0, 0);
-		}
-
-		if (loadingBar.loadingBarDimensions.x <= 1420f && outerLinesLeft.GetComponent<Animator>().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesLeftIdle")) {
+		if (loadingBar.loadingBarDimensions.x <= 1420f && introActiveBot == 2) {
 
 			outerLinesLeft.GetComponent<Animator> ().speed = 0;
 			outerLinesLeft.GetComponent<Animator> ().Play ("OuterLinesLeftIdle", 0, 0);
-		} else if (loadingBar.loadingBarDimensions.x >= 1420f && synergyActive == false){
-			
-			outerLinesLeft.GetComponent<Animator> ().speed = 1;
-			Debug.Log ("asdas");
-		}
-
-
-
-
-
-
-		//Bottom Right
-		if (loadingBar.loadingBarDimensions.x >= 800f && outerLinesRight.GetComponent<Animator>().speed == 0){
-
-			outerLinesRight.GetComponent<Animator>().speed = 1;
-		}
-		if (loadingBar.loadingBarDimensions.x <= 1420f && outerLinesRight.GetComponent<Animator>().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesRightIdle")) {
-
 			outerLinesRight.GetComponent<Animator> ().speed = 0;
 			outerLinesRight.GetComponent<Animator> ().Play ("OuterLinesRightIdle", 0, 0);
-		} else if (loadingBar.loadingBarDimensions.x >= 1420f){
+		} else if (loadingBar.loadingBarDimensions.x >= 1420f && synergyActive == false && introActiveBot == 2){
 
+			outerLinesLeft.GetComponent<Animator> ().speed = 1;
 			outerLinesRight.GetComponent<Animator> ().speed = 1;
 		}
-		if (synergyActive == false && outerLinesRight.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesRightSyn")) {
 
+		if (synergyActive == false && outerLinesLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesLeftSyn") && introActiveBot == 2) {
+
+			outerLinesLeft.GetComponent<Animator> ().speed = 0;
+			outerLinesLeft.GetComponent<Animator> ().Play ("OuterLinesLeftSyn", 0, 0);
 			outerLinesRight.GetComponent<Animator> ().speed = 0;
 			outerLinesRight.GetComponent<Animator> ().Play ("OuterLinesRightSyn", 0, 0);
+			introActiveBot = 3;
 		}
-		//Top Left
-		if (loadingBar.loadingBarDimensions.x >= 1000f && outerLinesTopLeft.GetComponent<Animator>().speed == 0){
+
+		if (synergyActive == true && introActiveBot == 3) {
+
+			outerLinesLeft.GetComponent<Animator> ().speed = 1;
+			outerLinesRight.GetComponent<Animator> ().speed = 1;
+		}
+
+		if (synergyActive == false && introActiveBot == 4) {
+
+			outerLinesLeft.GetComponent<Animator> ().speed = 1;
+			outerLinesRight.GetComponent<Animator> ().speed = 1;
+			introActiveBot = 3;
+		}
+		//Top Lines
+		if (loadingBar.loadingBarDimensions.x >= 1000f && introActiveTop == 1){
 
 			outerLinesTopLeft.GetComponent<Animator>().speed = 1;
+			outerLinesTopRight.GetComponent<Animator>().speed = 1;
+			if (outerLinesTopLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesTopLeftIdle")) {
+				introActiveTop = 2;
+			}
 		}
-		if (loadingBar.loadingBarDimensions.x <= 1420f && outerLinesTopLeft.GetComponent<Animator>().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesTopLeftIdle")) {
+
+		if (loadingBar.loadingBarDimensions.x <= 1420f && introActiveTop == 2) {
 
 			outerLinesTopLeft.GetComponent<Animator> ().speed = 0;
 			outerLinesTopLeft.GetComponent<Animator> ().Play ("OuterLinesTopLeftIdle", 0, 0);
-		} else if (loadingBar.loadingBarDimensions.x >= 1420f){
+			outerLinesTopRight.GetComponent<Animator> ().speed = 0;
+			outerLinesTopRight.GetComponent<Animator> ().Play ("OuterLinesTopRightIdle", 0, 0);
+		} else if (loadingBar.loadingBarDimensions.x >= 1420f && synergyActive == false && introActiveTop == 2){
 
 			outerLinesTopLeft.GetComponent<Animator> ().speed = 1;
+			outerLinesTopRight.GetComponent<Animator> ().speed = 1;
 		}
-		if (synergyActive == false && outerLinesTopLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesTopLeftSyn")) {
+
+		if (synergyActive == false && outerLinesTopLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesTopLeftSyn") && introActiveTop == 2) {
 
 			outerLinesTopLeft.GetComponent<Animator> ().speed = 0;
 			outerLinesTopLeft.GetComponent<Animator> ().Play ("OuterLinesTopLeftSyn", 0, 0);
-		}
-		//Top Right
-		if (loadingBar.loadingBarDimensions.x >= 1000f && outerLinesTopRight.GetComponent<Animator>().speed == 0){
-
-			outerLinesTopRight.GetComponent<Animator>().speed = 1;
-		}
-		if (loadingBar.loadingBarDimensions.x <= 1420f && outerLinesTopRight.GetComponent<Animator>().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesTopRightIdle")) {
-
-			outerLinesTopRight.GetComponent<Animator> ().speed = 0;
-			outerLinesTopRight.GetComponent<Animator> ().Play ("OuterLinesTopRightIdle", 0, 0);
-		} else if (loadingBar.loadingBarDimensions.x >= 1420f){
-
-			outerLinesTopRight.GetComponent<Animator> ().speed = 1;
-		}
-		if (synergyActive == false && outerLinesTopRight.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesTopRightSyn")) {
-
 			outerLinesTopRight.GetComponent<Animator> ().speed = 0;
 			outerLinesTopRight.GetComponent<Animator> ().Play ("OuterLinesTopRightSyn", 0, 0);
+			introActiveTop = 3;
 		}
-		//Inner Left
-		if (loadingBar.loadingBarDimensions.x >= 1200f && innerLinesLeft.GetComponent<Animator>().speed == 0){
+
+		if (synergyActive == true && introActiveTop == 3) {
+
+			outerLinesTopLeft.GetComponent<Animator> ().speed = 1;
+			outerLinesTopRight.GetComponent<Animator> ().speed = 1;
+		}
+
+		if (synergyActive == false && introActiveTop == 4) {
+
+			outerLinesTopLeft.GetComponent<Animator> ().speed = 1;
+			outerLinesTopRight.GetComponent<Animator> ().speed = 1;
+			introActiveTop = 3;
+		}
+		//Inner Lines
+		if (loadingBar.loadingBarDimensions.x >= 1200f && introActiveInTop == 1){
 
 			innerLinesLeft.GetComponent<Animator>().speed = 1;
+			innerLinesRight.GetComponent<Animator>().speed = 1;
+			if (innerLinesLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("InnerLinesLeftIdle")) {
+				introActiveInTop = 2;
+			}
 		}
-		if (loadingBar.loadingBarDimensions.x <= 1420f && innerLinesLeft.GetComponent<Animator>().GetCurrentAnimatorStateInfo (0).IsName ("InnerLinesLeftIdle")) {
+
+		if (loadingBar.loadingBarDimensions.x <= 1420f && introActiveInTop == 2) {
 
 			innerLinesLeft.GetComponent<Animator> ().speed = 0;
 			innerLinesLeft.GetComponent<Animator> ().Play ("InnerLinesLeftIdle", 0, 0);
-		} else if (loadingBar.loadingBarDimensions.x >= 1420f){
+			innerLinesRight.GetComponent<Animator> ().speed = 0;
+			innerLinesRight.GetComponent<Animator> ().Play ("InnerLinesRightIdle", 0, 0);
+		} else if (loadingBar.loadingBarDimensions.x >= 1420f && synergyActive == false && introActiveInTop == 2){
 
 			innerLinesLeft.GetComponent<Animator> ().speed = 1;
+			innerLinesRight.GetComponent<Animator> ().speed = 1;
 		}
-		if (synergyActive == false && innerLinesLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("InnerLinesLeftSyn")) {
+
+		if (synergyActive == false && innerLinesLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("InnerLinesLeftSyn") && introActiveInTop == 2) {
 
 			innerLinesLeft.GetComponent<Animator> ().speed = 0;
 			innerLinesLeft.GetComponent<Animator> ().Play ("InnerLinesLeftSyn", 0, 0);
-		}
-		//Inner Right
-		if (loadingBar.loadingBarDimensions.x >= 1200f && innerLinesRight.GetComponent<Animator>().speed == 0){
-
-			innerLinesRight.GetComponent<Animator>().speed = 1;
-		}
-		if (loadingBar.loadingBarDimensions.x <= 1420f && innerLinesRight.GetComponent<Animator>().GetCurrentAnimatorStateInfo (0).IsName ("InnerLinesRightIdle")) {
-
-			innerLinesRight.GetComponent<Animator> ().speed = 0;
-			innerLinesRight.GetComponent<Animator> ().Play ("InnerLinesRightIdle", 0, 0);
-		} else if (loadingBar.loadingBarDimensions.x >= 1420f){
-
-			innerLinesRight.GetComponent<Animator> ().speed = 1;
-		}
-		if (synergyActive == false && innerLinesRight.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("InnerLinesRightSyn")) {
-
 			innerLinesRight.GetComponent<Animator> ().speed = 0;
 			innerLinesRight.GetComponent<Animator> ().Play ("InnerLinesRightSyn", 0, 0);
+			introActiveInTop = 3;
 		}
-		//Health
-		if (loadingBar.loadingBarDimensions.x >= 1400f && healthShell.GetComponent<Animator>().speed == 0){
 
-			healthShell.GetComponent<Animator>().speed = 1;
+		if (synergyActive == true && introActiveInTop == 3) {
+
+			innerLinesLeft.GetComponent<Animator> ().speed = 1;
+			innerLinesRight.GetComponent<Animator> ().speed = 1;
 		}
+
+		if (synergyActive == false && introActiveInTop == 4) {
+
+			innerLinesLeft.GetComponent<Animator> ().speed = 1;
+			innerLinesRight.GetComponent<Animator> ().speed = 1;
+			introActiveInTop = 3;
+		}
+
+		if (loadingBar.loadingBarDimensions.x >= 1420f) {
+			
+			healthShell.GetComponent<Animator> ().speed = 1;
+		}
+
+		if (synergyActive == true && 
+	}
+
+	public void bulletHit() {
+
+
 	}
 }

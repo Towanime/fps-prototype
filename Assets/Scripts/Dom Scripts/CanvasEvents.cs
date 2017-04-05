@@ -27,7 +27,7 @@ public class CanvasEvents : MonoBehaviour {
 	}
 
 	IEnumerator BootingDialog() {
-		
+		/*
 		yield return new WaitForSeconds (delay);
 		typeWriter.fullText = "NEW HARDWARE DETECTED";
 		typeWriter.StartCoroutine ("ShowText");
@@ -44,7 +44,7 @@ public class CanvasEvents : MonoBehaviour {
 
 		delay = 6f;
 		yield return new WaitForSeconds (delay);
-
+*/
 		typeWriter.GetComponent<Text> ().color = Color.white;
 
 		bootText.rectTransform.position -= new Vector3 (0, positionTweak, 0);
