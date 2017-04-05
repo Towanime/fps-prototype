@@ -20,6 +20,7 @@ public class EnemyScript : MonoBehaviour {
 	private float shootTime;
 	public float EnemyCode;
 	private NavMeshAgent myNav;
+	public HitScanWeapon hitScan;
 
 	//Charge variables
 	private Vector3 LastPlayerPos;
@@ -234,10 +235,14 @@ public class EnemyScript : MonoBehaviour {
 
 	//Shoot function
 	void Shoot(){
-		shootTime += Time.deltaTime;
-		if(shootTime >= shootCd){
-			//cast shoot and animation
-			shootTime = 0f;
+		if (hitScan.currentBulletCount > 0) {
+			hitScan.ShootContinuously ();
+		} else {
+			shootTime += Time.deltaTime;
+			if (shootTime >= shootCd) {
+				hitScan.Reload ();
+				shootTime = 0f;
+			}
 		}
 	}
 

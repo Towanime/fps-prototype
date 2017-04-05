@@ -8,7 +8,6 @@ public class EnemyScope : MonoBehaviour {
 	public float playerDistance;
 	public Transform playerPos;
 	public float Range;
-	public bool playerInRange;
 	public GameObject[] playerHitpoints;
 	public bool canAttack;
 	// Use this for initialization
@@ -38,13 +37,16 @@ public class EnemyScope : MonoBehaviour {
 		for(int i = 0; i < playerHitpoints.Length;i++){
 			Vector3 Dir;
 			Dir = playerHitpoints [i].transform.position - transform.position; // setting direction betwwen the initial position of the camera and the player
-			Physics.Raycast (transform.position, Dir, out hit,playerDistance+3);//doing first raycast detecting objects between the player and the camera
-			if (hit.collider.tag == "Player") {
-				Debug.DrawRay (transform.position, Dir);
-				i = playerHitpoints.Length;
-				canAttack = true;
-			} else {
-				Debug.Log (hit.collider.tag);
+			if (Physics.Raycast (transform.position, Dir, out hit, playerDistance + 3)) {//doing first raycast detecting objects between the player and the camera
+
+				if (hit.collider.tag == "Player") {
+					Debug.DrawRay (transform.position, Dir);
+					i = playerHitpoints.Length;
+					canAttack = true;
+					Debug.Log (hit.collider.tag);
+				} else {
+					Debug.Log (hit.collider.tag);
+				}
 			}
 
 		}
