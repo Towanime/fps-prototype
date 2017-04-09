@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour {
 	public Transform playerPos;
+	public Animator myAnimator;
 	public float playerDistance;
 	public float Range;
 	public Quaternion rotation;
@@ -87,12 +88,17 @@ public class EnemyScript : MonoBehaviour {
 		StoplookPlayer ();
 		stateTime = 0f;
 		shootTime = 0f;
+		myAnimator.SetBool ("Idle", false);
+		myAnimator.SetBool ("Shoot", false);
+		myAnimator.SetBool ("Walk", false);
+		myAnimator.SetBool ("Death", false);
 	}
 	//Idle
 
 	void StartIdle(){
 		ResetStates ();
 		currentState = "isIdling";
+		myAnimator.SetBool ("Idle", true);
 	}
 	void Idle(){
 
@@ -138,6 +144,9 @@ public class EnemyScript : MonoBehaviour {
 	void StartAttack(){
 		ResetStates ();
 		currentState = "isAttacking";
+		if (EnemyCode == 1) {
+			myAnimator.SetBool ("Shoot", true);
+		}
 	}
 	void Attack(){
 		if (EnemyCode == 1) {
@@ -198,6 +207,7 @@ public class EnemyScript : MonoBehaviour {
 				minDistance = Vector3.Distance (transform.position, hidingPoints [i].transform.position);
 			}
 		}
+		myAnimator.SetBool ("Walk", true);
 	}
 	void GetCover(){
 		myNav.SetDestination (hideSpotPos);
