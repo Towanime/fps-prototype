@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour {
 	public Transform playerPos;
+	public Animator myAnimator;
 	public float playerDistance;
 	public float Range;
 	public Quaternion rotation;
@@ -36,6 +37,9 @@ public class EnemyScript : MonoBehaviour {
 	public float HidingRange;
 	public float stopHidingRange;
 
+	//Minos var
+	public float punchRange;
+
 
 
 	void Start () {		
@@ -55,7 +59,10 @@ public class EnemyScript : MonoBehaviour {
 	void RunStates(){
 		playerDistance = Vector3.Distance (playerPos.position, transform.position);
 		if(canAttack && EnemyCode == 1 && playerDistance <= HidingRange && currentState != "isGettingCover"){
-			StartGetCover ();
+			CheckCover ();
+		}
+		else if(canAttack && EnemyCode == 2 && playerDistance <= punchRange && currentState != "isWalkingAround"){
+			StartWalkAround ();
 		}
 		else if (canAttack && currentState == "isIdling") {
 			StartlookPlayer ();
@@ -87,12 +94,22 @@ public class EnemyScript : MonoBehaviour {
 		StoplookPlayer ();
 		stateTime = 0f;
 		shootTime = 0f;
+		myAnimator.SetBool ("Idle", false);
+		if(EnemyCode == 1)
+			myAnimator.SetBool ("Shoot", false);
+		if (EnemyCode == 2) {
+			myAnimator.SetBool ("Run", false);
+			myAnimator.SetBool ("Punch", false);
+		}
+		myAnimator.SetBool ("Walk", false);
+		myAnimator.SetBool ("Death", false);
 	}
 	//Idle
 
 	void StartIdle(){
 		ResetStates ();
 		currentState = "isIdling";
+		myAnimator.SetBool ("Idle", true);
 	}
 	void Idle(){
 
@@ -138,6 +155,12 @@ public class EnemyScript : MonoBehaviour {
 	void StartAttack(){
 		ResetStates ();
 		currentState = "isAttacking";
+		if (EnemyCode == 1) {
+			myAnimator.SetBool ("Shoot", true);
+		}
+		if (EnemyCode == 2) {
+			myAnimator.SetBool ("Run", true);
+		}
 	}
 	void Attack(){
 		if (EnemyCode == 1) {
@@ -187,17 +210,7 @@ public class EnemyScript : MonoBehaviour {
 	void StartGetCover(){
 		ResetStates ();
 		currentState = "isGettingCover";
-		float minDistance = 1000;
-		float HidingSpotDistance;
-		float playerToHideDistance;
-		for(int i = 0; i<hidingPoints.Length;i++){
-			HidingSpotDistance = Vector3.Distance (transform.position, hidingPoints [i].transform.position);
-			playerToHideDistance =  Vector3.Distance (playerPos.position, hidingPoints [i].transform.position);
-			if( HidingSpotDistance < minDistance && HidingSpotDistance > stopHidingRange && HidingSpotDistance < playerToHideDistance){
-				hideSpotPos = hidingPoints [i].transform.position;
-				minDistance = Vector3.Distance (transform.position, hidingPoints [i].transform.position);
-			}
-		}
+		myAnimator.SetBool ("Walk", true);
 	}
 	void GetCover(){
 		myNav.SetDestination (hideSpotPos);
@@ -213,12 +226,16 @@ public class EnemyScript : MonoBehaviour {
 	//walk around the player
 	void StartWalkAround(){
 		ResetStates ();
+		myAnimator.SetBool ("Punch", true);
 		currentState = "isWalkingAround";
-		stateTime = walkAroundCD - 0.5f;
+		stateTime = walkAroundCD - 1f;
 	}
 	void WalkAround(){
 		stateTime += Time.deltaTime;
 		if (stateTime >= walkAroundCD) {
+			myAnimator.SetBool ("Punch", false);
+			myAnimator.SetBool ("Idle", false);
+			myAnimator.SetBool ("Walk", true);
 			MoveAroundPlayer ();
 			stateTime = 0;
 		}
@@ -278,6 +295,22 @@ public class EnemyScript : MonoBehaviour {
 		myNav.SetDestination (hideSpotPos);
 
 	}
+	void CheckCover(){
+		float minDistance = 1000;
+		float HidingSpotDistance;
+		float playerToHideDistance;
+		for(int i = 0; i<hidingPoints.Length;i++){
+			HidingSpotDistance = Vector3.Distance (transform.position, hidingPoints [i].transform.position);
+			playerToHideDistance =  Vector3.Distance (playerPos.position, hidingPoints [i].transform.position);
+			if( HidingSpotDistance < minDistance && HidingSpotDistance > stopHidingRange && HidingSpotDistance < playerToHideDistance){
+				hideSpotPos = hidingPoints [i].transform.position;
+				minDistance = Vector3.Distance (transform.position, hidingPoints [i].transform.position);
+			}
+		}
+		if (minDistance < 1000) {
+			StartGetCover ();
+		}
+	}
 	//Public functions
 	public void PlayerLocated(){
 		canAttack = true;
@@ -289,6 +322,7 @@ public class EnemyScript : MonoBehaviour {
 		if (EnemyCode == 2) {
 			StopAttack ();//i need star moving around the player here
 			StartWalkAround();
+
 		}
 	}
 }
