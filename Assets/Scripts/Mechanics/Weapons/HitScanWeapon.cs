@@ -48,6 +48,8 @@ public class HitScanWeapon : Weapon {
     public Camera playerCamera;
     public AnimationCurve recoilAnimationCurve;
 
+    public Animator animator;
+
     private float initialFov;
 
     void Start()
@@ -151,6 +153,11 @@ public class HitScanWeapon : Weapon {
         if (Physics.Raycast(aimingTransform.TransformPoint(startPosition), direction, out hit, range, ~ignoreLayerMask))
         {
             HitObject(hit);
+        }
+
+        if (animator != null)
+        {
+            animator.SetTrigger("fired");
         }
     }
 
