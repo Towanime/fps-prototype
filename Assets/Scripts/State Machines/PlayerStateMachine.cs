@@ -9,8 +9,7 @@ public class PlayerStateMachine : MonoBehaviour {
     public Inventory inventory;
     public StationaryShieldPower stationaryShieldPower;
     public Synergy synergy;
-
-    public float reloadingTime = 2f;
+    public Animator weaponAnimator;
 
     private StateMachine<PlayerStates> fsm;
     private StateMachine<MovementStates> movementStateMachine;
@@ -48,29 +47,34 @@ public class PlayerStateMachine : MonoBehaviour {
     void Reloading_Enter()
     {
         // start reloading animation
-        reloadingCoroutine = StartCoroutine(ReloadingCoroutine());
+        weaponAnimator.SetBool("reloading", true);
     }
 
     void Reloading_Update()
     {
+        Debug.Log("Player reloading");
         // interrupt reloading if the player performs an action like switch weapon
         if (playerInput.threwShield)
         {
             stationaryShieldPower.ThrowShield(synergy);
+            movementStateMachine.ChangeState(MovementStates.Default);
         }
-        Debug.Log("Player reloading");
+        AnimatorStateInfo animatorStateInfo = weaponAnimator.GetCurrentAnimatorStateInfo(0);
+        if (animatorStateInfo.IsName("Reloading") && animatorStateInfo.normalizedTime >= 1)
+        {
+            OnReloadingAnimationFinished();
+        }
+    }
+
+    void OnReloadingAnimationFinished()
+    {
+        Debug.Log("Player reloading finished");
+        inventory.GetCurrentWeapon().Reload();
+        fsm.ChangeState(PlayerStates.Default);
     }
 
     void Reloading_Exit()
     {
-        StopCoroutine(reloadingCoroutine);
-    }
-
-    IEnumerator ReloadingCoroutine()
-    {
-        yield return new WaitForSeconds(reloadingTime);
-        Debug.Log("Player reloading finished");
-        inventory.GetCurrentWeapon().Reload();
-        fsm.ChangeState(PlayerStates.Default);
+        weaponAnimator.SetBool("reloading", false);
     }
 }

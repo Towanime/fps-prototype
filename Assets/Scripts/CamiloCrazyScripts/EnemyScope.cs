@@ -43,18 +43,10 @@ public class EnemyScope : MonoBehaviour {
 					Debug.DrawRay (transform.position, Dir);
 					i = playerHitpoints.Length;
 					canAttack = true;
-					Debug.Log (hit.collider.tag);
-				} else {
-					Debug.Log (hit.collider.tag);
-				}
+				} 
 			}
 
 		}
 
-	}
-	void OnTriggerEnter(Collider other){
-		if (other.gameObject.tag == "Player") {
-			myEnemy.PlayerOnTrigger ();
-		}
 	}
 }
