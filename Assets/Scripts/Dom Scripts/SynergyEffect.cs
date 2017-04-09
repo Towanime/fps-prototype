@@ -44,4 +44,8 @@ public class SynergyEffect : MonoBehaviour {
 		animationManager.innerLinesRight.GetComponent<Animator> ().speed = 0f;
 		animationManager.innerLinesRight.GetComponent<Animator> ().Play ("InnerLinesRightSyn", 0, 0);
 	}
+	public void GetHitOver() {
+
+		animationManager.getHit = false;
+	}
 }
