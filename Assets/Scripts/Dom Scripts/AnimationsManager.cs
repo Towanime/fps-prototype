@@ -182,7 +182,7 @@ public class AnimationsManager : MonoBehaviour {
 			healthShell.GetComponent<Animator> ().speed = 1;
 		}
 
-		if (synergyActive == true && 
+	//	if (synergyActive == true && 
 	}
 
 	public void bulletHit() {
