@@ -10,10 +10,15 @@ public class PlayerStateMachine : MonoBehaviour {
     public StationaryShieldPower stationaryShieldPower;
     public Synergy synergy;
     public Animator weaponAnimator;
+    public AnimationCurve dashingSpeedCurve;
+    public GameObject player;
+    public float dashingDuration;
+    public float dashingMaxSpeed;
 
     private StateMachine<PlayerStates> fsm;
     private StateMachine<MovementStates> movementStateMachine;
-    private Coroutine reloadingCoroutine;
+    private float stateEnterTime;
+    private Vector3 dashDirection;
 
     void Awake()
     {
@@ -28,7 +33,8 @@ public class PlayerStateMachine : MonoBehaviour {
 
     void Default_Update()
     {
-        if (inventory.GetCurrentWeapon().CurrentBulletCount <= 0)
+        UpdateSynergyInput();
+        if (inventory.GetCurrentWeapon().CurrentBulletCount <= 0 || (playerInput.reloaded && !inventory.GetCurrentWeapon().FullyLoaded))
         {
             fsm.ChangeState(PlayerStates.Reloading);
         } else if (playerInput.shot)
@@ -41,7 +47,15 @@ public class PlayerStateMachine : MonoBehaviour {
         if (playerInput.threwShield)
         {
             stationaryShieldPower.ThrowShield(synergy);
+        } else if (playerInput.dashed && synergy.CurrentState == Synergy.SynergyState.DEPLETING)
+        {
+            fsm.ChangeState(PlayerStates.Dashing);
         }
+    }
+
+    private void UpdateSynergyInput()
+    {
+        synergy.CurrentState = playerInput.synergy ? Synergy.SynergyState.DEPLETING : Synergy.SynergyState.RECOVERING;
     }
 
     void Reloading_Enter()
@@ -52,17 +66,48 @@ public class PlayerStateMachine : MonoBehaviour {
 
     void Reloading_Update()
     {
+        UpdateSynergyInput();
         Debug.Log("Player reloading");
         // interrupt reloading if the player performs an action like switch weapon
         if (playerInput.threwShield)
         {
-            stationaryShieldPower.ThrowShield(synergy);
-            movementStateMachine.ChangeState(MovementStates.Default);
+            bool thrown = stationaryShieldPower.ThrowShield(synergy);
+            if (thrown)
+            {
+                fsm.ChangeState(PlayerStates.Default);
+            }
+        } else if (playerInput.dashed)
+        {
+            fsm.ChangeState(PlayerStates.Dashing);
         }
         AnimatorStateInfo animatorStateInfo = weaponAnimator.GetCurrentAnimatorStateInfo(0);
         if (animatorStateInfo.IsName("Reloading") && animatorStateInfo.normalizedTime >= 1)
         {
             OnReloadingAnimationFinished();
+        }
+    }
+
+    void Dashing_Enter()
+    {
+        synergy.CurrentState = Synergy.SynergyState.DEPLETING;
+        stateEnterTime = Time.time;
+        movementStateMachine.ChangeState(MovementStates.InputDisabled);
+        // Calculate dash direction
+        Quaternion inputAngle = Quaternion.LookRotation(playerInput.direction);
+        dashDirection = inputAngle * player.transform.forward;
+        dashDirection = dashDirection.normalized;
+    }
+
+    void Dashing_Update()
+    {
+        float t = (Time.time - stateEnterTime) / dashingDuration;
+        float speedDelta = dashingSpeedCurve.Evaluate((Time.time - stateEnterTime) / dashingDuration);
+        float currentSpeed = Mathf.Lerp(0, dashingMaxSpeed, speedDelta);
+
+        player.transform.Translate(dashDirection * currentSpeed * Time.deltaTime, Space.World);
+        if (t >= 1)
+        {
+            fsm.ChangeState(PlayerStates.Default);
         }
     }
 

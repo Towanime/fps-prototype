@@ -18,7 +18,9 @@ public class PlayerInput : MonoBehaviour
     public bool shot;
     public bool shooting;
     public bool threwShield;
+    public bool dashed;
     public bool crouching;
+    public bool reloaded;
 
     void Update()
     {
@@ -73,5 +75,7 @@ public class PlayerInput : MonoBehaviour
         this.shot = Input.GetKeyDown(this.config.shoot);
         this.crouching = Input.GetKey(this.config.crouch);
         this.threwShield = Input.GetKeyDown(this.config.throwShield);
+        this.dashed = Input.GetKeyDown(this.config.dash);
+        this.reloaded = Input.GetKeyDown(this.config.reload);
     }    
 }

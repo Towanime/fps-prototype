@@ -13,7 +13,7 @@ public class StationaryShieldPower : MonoBehaviour {
     private float lastThrowTime;
     private GameObject deployedShield;
 
-    public void ThrowShield(Synergy synergy)
+    public bool ThrowShield(Synergy synergy)
     {
         bool cooldownFinished = Time.time - lastThrowTime >= cooldownTime;
         if (cooldownFinished && synergy.Consume(synergyCost))
@@ -22,7 +22,9 @@ public class StationaryShieldPower : MonoBehaviour {
             projectile.GetComponent<StationaryShieldProjectile>().stationaryShieldPower = this;
             projectile.GetComponent<Rigidbody>().AddForce(aimingTransform.forward.normalized * shootForce);
             lastThrowTime = Time.time;
+            return true;
         }
+        return false;
     }
 
     public void OnShieldDeploy(GameObject deployedShield)

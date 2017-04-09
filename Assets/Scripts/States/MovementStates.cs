@@ -4,5 +4,6 @@ using UnityEngine;
 
 public enum MovementStates {
 
-    Default
+    Default,
+    InputDisabled
 }

@@ -5,5 +5,6 @@ using UnityEngine;
 public enum PlayerStates {
 
     Default,
-    Reloading
+    Reloading,
+    Dashing
 }

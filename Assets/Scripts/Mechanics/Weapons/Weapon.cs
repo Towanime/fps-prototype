@@ -58,4 +58,9 @@ public class Weapon : MonoBehaviour
     {
         get { return currentSpreadRange; }
     }
+
+    public bool FullyLoaded
+    {
+        get { return currentBulletCount == magazineSize; }
+    }
 }
