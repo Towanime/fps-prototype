@@ -9,7 +9,7 @@ public class DamageableEntity : MonoBehaviour
     public GameObject checkpoint;
     public bool destroyOnDeath;
     public BaseActivator onDeathActivator;
-    protected float currentLife;
+	public float currentLife;
 
     void Start()
     {

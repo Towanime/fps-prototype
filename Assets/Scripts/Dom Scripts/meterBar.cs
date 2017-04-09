@@ -7,29 +7,24 @@ using UnityEngine.UI;
 public class meterBar : MonoBehaviour {
 
 	public Text meterText;
-	public float meterAmount = 1f;
-	public float meterTextAdjust;
+	public int meterAmount = 100;
+	private float meterFillAdjust;
 	public string meterTextMax;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
 	void Update () {
 
-		this.GetComponent<Image> ().fillAmount = meterAmount;
+		meterFillAdjust = 0.01f * meterAmount;
+		this.GetComponent<Image> ().fillAmount = meterFillAdjust;
 
-		if (meterAmount >= 1f){
-			meterAmount = 1f;
+		if (meterAmount >= 100){
+			meterAmount = 100;
 		}
 
-		if (meterAmount <= 0f){
-			meterAmount = 0f;
+		if (meterAmount <= 0){
+			meterAmount = 0;
 		}
 
-		float meterTextDisplayed = meterAmount * meterTextAdjust;
-		meterText.text = meterTextDisplayed + meterTextMax;
+		float meterTextDisplayed = meterAmount;
+		meterText.text = meterTextDisplayed + "/" + meterTextMax;
 	}
 }

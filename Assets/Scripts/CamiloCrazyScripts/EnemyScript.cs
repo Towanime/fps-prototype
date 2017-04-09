@@ -19,15 +19,23 @@ public class EnemyScript : MonoBehaviour {
 	private float stateTime;
 	private float shootTime;
 	public float EnemyCode;
-	public float speed;
-	public float HidingRange;
-	public float stopHidingRange;
-	//private CharacterController cc;
+	private NavMeshAgent myNav;
+	public HitScanWeapon hitScan;
+
+	//Charge variables
 	private Vector3 LastPlayerPos;
 	private Vector3 ChargeDir;
-	private NavMeshAgent myNav;
+	public float speed;
+	private Vector3 walkAroundPoint;
+	public float walkAroundCD;
+	public float walkAroundRadius;
+
+	//hiding variables
 	public GameObject[] hidingPoints;
 	private Vector3 hideSpotPos;
+	public float HidingRange;
+	public float stopHidingRange;
+
 
 
 	void Start () {		
@@ -46,16 +54,16 @@ public class EnemyScript : MonoBehaviour {
 	}
 	void RunStates(){
 		playerDistance = Vector3.Distance (playerPos.position, transform.position);
-		if(canAttack && EnemyCode == 1 && playerDistance <= HidingRange){
+		if(canAttack && EnemyCode == 1 && playerDistance <= HidingRange && currentState != "isGettingCover"){
 			StartGetCover ();
 		}
 		else if (canAttack && currentState == "isIdling") {
 			StartlookPlayer ();
 		} else if (!canAttack && (currentState == "isAttacking" || currentState == "isLooking") && EnemyCode != 2) {
 			StartRandShoot ();
-			}
-			else if (currentState == "none")
-				StartIdle();
+		}
+		else if (currentState == "none")
+			StartIdle();
 		//Run ongoing states
 		switch (currentState) {
 		case "isShootingRand":  	RandShoot ();		break;
@@ -65,6 +73,7 @@ public class EnemyScript : MonoBehaviour {
 		case "isMoving":  			Move (); 			break;
 		case "isIdling":  			Idle (); 			break;
 		case "isGettingCover":		GetCover ();		break;
+		case "isWalkingAround":		WalkAround ();		break;
 		}
 	}
 	void ResetStates(){
@@ -73,6 +82,9 @@ public class EnemyScript : MonoBehaviour {
 		StopMove ();
 		StopGetHit ();
 		StopGetCover ();
+		StopRandShoot ();
+		StopWalkAround ();
+		StoplookPlayer ();
 		stateTime = 0f;
 		shootTime = 0f;
 	}
@@ -176,8 +188,12 @@ public class EnemyScript : MonoBehaviour {
 		ResetStates ();
 		currentState = "isGettingCover";
 		float minDistance = 1000;
+		float HidingSpotDistance;
+		float playerToHideDistance;
 		for(int i = 0; i<hidingPoints.Length;i++){
-			if(Vector3.Distance(transform.position, hidingPoints[i].transform.position) < minDistance){
+			HidingSpotDistance = Vector3.Distance (transform.position, hidingPoints [i].transform.position);
+			playerToHideDistance =  Vector3.Distance (playerPos.position, hidingPoints [i].transform.position);
+			if( HidingSpotDistance < minDistance && HidingSpotDistance > stopHidingRange && HidingSpotDistance < playerToHideDistance){
 				hideSpotPos = hidingPoints [i].transform.position;
 				minDistance = Vector3.Distance (transform.position, hidingPoints [i].transform.position);
 			}
@@ -185,9 +201,29 @@ public class EnemyScript : MonoBehaviour {
 	}
 	void GetCover(){
 		myNav.SetDestination (hideSpotPos);
-
+		if (Vector3.Distance (transform.position, hideSpotPos) <= stopHidingRange) {
+			myNav.ResetPath ();
+			StopGetCover ();
+		}
 	}
 	void StopGetCover(){
+		currentState = "none";
+	}
+
+	//walk around the player
+	void StartWalkAround(){
+		ResetStates ();
+		currentState = "isWalkingAround";
+		stateTime = walkAroundCD - 0.5f;
+	}
+	void WalkAround(){
+		stateTime += Time.deltaTime;
+		if (stateTime >= walkAroundCD) {
+			MoveAroundPlayer ();
+			stateTime = 0;
+		}
+	}
+	void StopWalkAround(){
 		currentState = "none";
 	}
 	//Private functions
@@ -199,16 +235,20 @@ public class EnemyScript : MonoBehaviour {
 
 	//Shoot function
 	void Shoot(){
-		shootTime += Time.deltaTime;
-		if(shootTime >= shootCd){
-			//cast shoot and animation
-			shootTime = 0f;
+		if (hitScan.currentBulletCount > 0) {
+			hitScan.ShootContinuously ();
+		} else {
+			shootTime += Time.deltaTime;
+			if (shootTime >= shootCd) {
+				hitScan.Reload ();
+				shootTime = 0f;
+			}
 		}
 	}
 
 	void Charge(){
-		myNav.SetDestination (LastPlayerPos);
-		//cc.Move (ChargeDir * Time.deltaTime * speed);
+		//myNav.SetDestination (LastPlayerPos);
+		myNav.Move (ChargeDir * Time.deltaTime * speed);
 		shootTime += Time.deltaTime;
 		if(shootTime >= shootCd){
 			ChargeDir = Vector3.zero;
@@ -226,19 +266,30 @@ public class EnemyScript : MonoBehaviour {
 	}
 	//stare the player
 	void LookAtPlayer(){
-			Vector3 Direction = playerPos.position - transform.position;
-			rotation = Quaternion.LookRotation (Direction);
-			transform.rotation = Quaternion.Slerp (transform.rotation, rotation, Time.deltaTime * rotationSpeed);
+		Vector3 Direction = playerPos.position - transform.position;
+		rotation = Quaternion.LookRotation (Direction);
+		transform.rotation = Quaternion.Slerp (transform.rotation, rotation, Time.deltaTime * rotationSpeed);
+	}
+	//Move around player Function
+	void MoveAroundPlayer(){
+		hideSpotPos = Random.insideUnitSphere * walkAroundRadius;
+		hideSpotPos = playerPos.position - hideSpotPos;
+		hideSpotPos.y = 0f;
+		myNav.SetDestination (hideSpotPos);
+
 	}
 	//Public functions
 	public void PlayerLocated(){
-			canAttack = true;
+		canAttack = true;
 	}
 	public void PlayerMissing(){
-			canAttack = false;
+		canAttack = false;
 	}
 	public void PlayerOnTrigger(){
-		StopAttack ();
+		if (EnemyCode == 2) {
+			StopAttack ();//i need star moving around the player here
+			StartWalkAround();
+		}
 	}
 }
 
