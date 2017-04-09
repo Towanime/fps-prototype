@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class meterBar : MonoBehaviour {
+public class MeterBar : MonoBehaviour {
 
 	public Text meterText;
 	public int meterAmount = 100;

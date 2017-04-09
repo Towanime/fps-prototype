@@ -9,6 +9,11 @@ public class AnimationsManager : MonoBehaviour {
 	public int introActiveTop = 1;
 	public int introActiveInTop = 1;
 	public bool synergyActive = false;
+	public bool getHit = false;
+	public bool synergyBarSpawn = false;
+
+	public SynergyEffect synergyEffect;
+	public MeterCircle meterCircle;
 
 	public LoadingBar loadingBar;
 	public Image outerLinesLeft;
@@ -48,10 +53,10 @@ public class AnimationsManager : MonoBehaviour {
 			ammoCircle.GetComponent<Animator> ().speed = 1;
 		}
 		//Bottom Lines
-		if (loadingBar.loadingBarDimensions.x >= 800f && introActiveBot == 1){
+		if (loadingBar.loadingBarDimensions.x >= 800f && introActiveBot == 1) {
 			
-			outerLinesLeft.GetComponent<Animator>().speed = 1;
-			outerLinesRight.GetComponent<Animator>().speed = 1;
+			outerLinesLeft.GetComponent<Animator> ().speed = 1;
+			outerLinesRight.GetComponent<Animator> ().speed = 1;
 			if (outerLinesLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesLeftIdle")) {
 				introActiveBot = 2;
 			}
@@ -63,7 +68,7 @@ public class AnimationsManager : MonoBehaviour {
 			outerLinesLeft.GetComponent<Animator> ().Play ("OuterLinesLeftIdle", 0, 0);
 			outerLinesRight.GetComponent<Animator> ().speed = 0;
 			outerLinesRight.GetComponent<Animator> ().Play ("OuterLinesRightIdle", 0, 0);
-		} else if (loadingBar.loadingBarDimensions.x >= 1420f && synergyActive == false && introActiveBot == 2){
+		} else if (loadingBar.loadingBarDimensions.x >= 1420f && synergyActive == false && introActiveBot == 2) {
 
 			outerLinesLeft.GetComponent<Animator> ().speed = 1;
 			outerLinesRight.GetComponent<Animator> ().speed = 1;
@@ -91,10 +96,10 @@ public class AnimationsManager : MonoBehaviour {
 			introActiveBot = 3;
 		}
 		//Top Lines
-		if (loadingBar.loadingBarDimensions.x >= 1000f && introActiveTop == 1){
+		if (loadingBar.loadingBarDimensions.x >= 1000f && introActiveTop == 1) {
 
-			outerLinesTopLeft.GetComponent<Animator>().speed = 1;
-			outerLinesTopRight.GetComponent<Animator>().speed = 1;
+			outerLinesTopLeft.GetComponent<Animator> ().speed = 1;
+			outerLinesTopRight.GetComponent<Animator> ().speed = 1;
 			if (outerLinesTopLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("OuterLinesTopLeftIdle")) {
 				introActiveTop = 2;
 			}
@@ -106,7 +111,7 @@ public class AnimationsManager : MonoBehaviour {
 			outerLinesTopLeft.GetComponent<Animator> ().Play ("OuterLinesTopLeftIdle", 0, 0);
 			outerLinesTopRight.GetComponent<Animator> ().speed = 0;
 			outerLinesTopRight.GetComponent<Animator> ().Play ("OuterLinesTopRightIdle", 0, 0);
-		} else if (loadingBar.loadingBarDimensions.x >= 1420f && synergyActive == false && introActiveTop == 2){
+		} else if (loadingBar.loadingBarDimensions.x >= 1420f && synergyActive == false && introActiveTop == 2) {
 
 			outerLinesTopLeft.GetComponent<Animator> ().speed = 1;
 			outerLinesTopRight.GetComponent<Animator> ().speed = 1;
@@ -134,10 +139,10 @@ public class AnimationsManager : MonoBehaviour {
 			introActiveTop = 3;
 		}
 		//Inner Lines
-		if (loadingBar.loadingBarDimensions.x >= 1200f && introActiveInTop == 1){
+		if (loadingBar.loadingBarDimensions.x >= 1200f && introActiveInTop == 1) {
 
-			innerLinesLeft.GetComponent<Animator>().speed = 1;
-			innerLinesRight.GetComponent<Animator>().speed = 1;
+			innerLinesLeft.GetComponent<Animator> ().speed = 1;
+			innerLinesRight.GetComponent<Animator> ().speed = 1;
 			if (innerLinesLeft.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("InnerLinesLeftIdle")) {
 				introActiveInTop = 2;
 			}
@@ -149,7 +154,7 @@ public class AnimationsManager : MonoBehaviour {
 			innerLinesLeft.GetComponent<Animator> ().Play ("InnerLinesLeftIdle", 0, 0);
 			innerLinesRight.GetComponent<Animator> ().speed = 0;
 			innerLinesRight.GetComponent<Animator> ().Play ("InnerLinesRightIdle", 0, 0);
-		} else if (loadingBar.loadingBarDimensions.x >= 1420f && synergyActive == false && introActiveInTop == 2){
+		} else if (loadingBar.loadingBarDimensions.x >= 1420f && synergyActive == false && introActiveInTop == 2) {
 
 			innerLinesLeft.GetComponent<Animator> ().speed = 1;
 			innerLinesRight.GetComponent<Animator> ().speed = 1;
@@ -177,16 +182,62 @@ public class AnimationsManager : MonoBehaviour {
 			introActiveInTop = 3;
 		}
 
+		//Health Bar Spawn
 		if (loadingBar.loadingBarDimensions.x >= 1420f) {
 			
 			healthShell.GetComponent<Animator> ().speed = 1;
 		}
+		//synergy bar spawn
+		if (synergyBarSpawn == true) {
 
-	//	if (synergyActive == true && 
-	}
+			synergyShell.GetComponent<Animator> ().speed = 1;
+		}
+		//ammo circle spawn
+		if (meterCircle.ammoNeedsReload == false && meterCircle.meterAmount != 20) {
 
-	public void bulletHit() {
+			ammoCircle.GetComponent<Animator> ().speed = 1;
+		}
+		if (meterCircle.ammoNeedsReload == true && meterCircle.meterAmount == 20) {
 
+			meterCircle.ammoNeedsReload = false;
+			ammoCircle.GetComponent<Animator> ().speed = 1;
+		}
+		//hit spaz
+		if (getHit == true && introActiveBot != 6) {
 
+			introActiveBot = 5;
+			introActiveTop = 5;
+			introActiveInTop = 5;
+		} 
+		if (introActiveTop == 5) {
+			outerLinesLeft.GetComponent<Animator> ().Play ("OuterLinesLeftHit", 0, 0);
+			outerLinesLeft.GetComponent<Animator> ().speed = 1f;
+
+			outerLinesRight.GetComponent<Animator> ().Play ("OuterLinesRightHit", 0, 0);
+			outerLinesRight.GetComponent<Animator> ().speed = 1f;
+
+			outerLinesTopLeft.GetComponent<Animator> ().Play ("OuterLinesTopLeftHit", 0, 0);
+			outerLinesTopLeft.GetComponent<Animator> ().speed = 1f;
+
+			outerLinesTopRight.GetComponent<Animator> ().Play ("OuterLinesTopRightHit", 0, 0);
+			outerLinesTopRight.GetComponent<Animator> ().speed = 1f;
+
+			innerLinesLeft.GetComponent<Animator> ().Play ("InnerLinesLeftHit", 0, 0);
+			innerLinesLeft.GetComponent<Animator> ().speed = 1f;
+
+			innerLinesRight.GetComponent<Animator> ().Play ("InnerLinesRightHit", 0, 0);
+			innerLinesRight.GetComponent<Animator> ().speed = 1f;
+
+			introActiveBot = 6;
+			introActiveTop = 6;
+			introActiveInTop = 6;
+		}
+		if (getHit == false && introActiveBot == 6) {
+
+			synergyEffect.SynergyEffectReset();
+			introActiveBot = 3;
+			introActiveTop = 3;
+			introActiveInTop = 3;
+		}
 	}
 }
