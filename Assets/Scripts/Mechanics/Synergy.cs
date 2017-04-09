@@ -4,28 +4,36 @@ using UnityEngine;
 
 public class Synergy : MonoBehaviour {
 
-    public float maxAmount;
-    public float currentAmount;
+    public bool active;
+    public float maxAmount = 100;
     public float recoverRate;
+    public float recoverRateMultiplier = 1;
     public float depleteRate;
+    public float depleteRateMultiplier = 1;
     public bool recovering;
     public bool depleting;
+    public float currentAmount;
+
+    void Start()
+    {
+        currentAmount = maxAmount;
+    }
 
     void Update()
     {
         if (recovering)
         {
-            Recover(recoverRate * Time.deltaTime);
+            Recover(recoverRate * recoverRateMultiplier * Time.deltaTime);
         }
         if (depleting)
         {
-            Consume(depleteRate * Time.deltaTime);
+            Consume(depleteRate * depleteRateMultiplier * Time.deltaTime);
         }
     }
 
     public bool Consume(float amount)
     {
-        if (!enabled)
+        if (!active)
         {
             return false;
         }
@@ -35,16 +43,31 @@ public class Synergy : MonoBehaviour {
             return false;
         }
         currentAmount -= absAmount;
-        return false;
+        return true;
     }
 
     public void Recover(float amount)
     {
-        if (!enabled)
+        if (!active)
         {
             return;
         }
         float absAmount = Mathf.Abs(amount);
         currentAmount = Mathf.Min(maxAmount, currentAmount + absAmount);
+    }
+
+    public void RecoverAll()
+    {
+        currentAmount = maxAmount;
+    }
+
+    public bool ConsumeAll()
+    {
+        if (!active)
+        {
+            return false;
+        }
+        currentAmount = 0;
+        return true;
     }
 }

@@ -7,6 +7,8 @@ public class PlayerStateMachine : MonoBehaviour {
     
     public PlayerInput playerInput;
     public Inventory inventory;
+    public StationaryShieldPower stationaryShieldPower;
+    public Synergy synergy;
 
     public float reloadingTime = 2f;
 
@@ -37,6 +39,10 @@ public class PlayerStateMachine : MonoBehaviour {
         {
             inventory.GetCurrentWeapon().ShootContinuously();
         }
+        if (playerInput.threwShield)
+        {
+            stationaryShieldPower.ThrowShield(synergy);
+        }
     }
 
     void Reloading_Enter()
@@ -48,6 +54,10 @@ public class PlayerStateMachine : MonoBehaviour {
     void Reloading_Update()
     {
         // interrupt reloading if the player performs an action like switch weapon
+        if (playerInput.threwShield)
+        {
+            stationaryShieldPower.ThrowShield(synergy);
+        }
         Debug.Log("Player reloading");
     }
 
