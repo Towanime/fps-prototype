@@ -39,6 +39,7 @@ public class EnemyScript : MonoBehaviour {
 
 	//Minos var
 	public float punchRange;
+	public float punchTime;
 
 
 
@@ -61,7 +62,7 @@ public class EnemyScript : MonoBehaviour {
 		if(canAttack && EnemyCode == 1 && playerDistance <= HidingRange && currentState != "isGettingCover"){
 			CheckCover ();
 		}
-		else if(canAttack && EnemyCode == 2 && playerDistance <= punchRange && currentState != "isWalkingAround"){
+		else if(canAttack && EnemyCode == 2 && playerDistance <= punchRange && currentState == "isAttacking"){
 			StartWalkAround ();
 		}
 		else if (canAttack && currentState == "isIdling") {
@@ -95,13 +96,14 @@ public class EnemyScript : MonoBehaviour {
 		stateTime = 0f;
 		shootTime = 0f;
 		myAnimator.SetBool ("Idle", false);
-		if(EnemyCode == 1)
+		if (EnemyCode == 1) {
 			myAnimator.SetBool ("Shoot", false);
+			myAnimator.SetBool ("Walk", false);
+		}
 		if (EnemyCode == 2) {
 			myAnimator.SetBool ("Run", false);
 			myAnimator.SetBool ("Punch", false);
 		}
-		myAnimator.SetBool ("Walk", false);
 	}
 	//Idle
 
@@ -227,16 +229,17 @@ public class EnemyScript : MonoBehaviour {
 		ResetStates ();
 		myAnimator.SetBool ("Punch", true);
 		currentState = "isWalkingAround";
-		stateTime = walkAroundCD - 1f;
+		stateTime = 0f;
 	}
 	void WalkAround(){
 		stateTime += Time.deltaTime;
-		if (stateTime >= walkAroundCD) {
+		if (stateTime >= punchTime) {
 			myAnimator.SetBool ("Punch", false);
-			myAnimator.SetBool ("Idle", false);
-			myAnimator.SetBool ("Walk", true);
-			MoveAroundPlayer ();
-			stateTime = 0;
+			myAnimator.SetBool ("Idle", true);
+			if (stateTime >= walkAroundCD) {
+				StopWalkAround ();
+				stateTime = 0;
+			}
 		}
 	}
 	void StopWalkAround(){
@@ -287,13 +290,6 @@ public class EnemyScript : MonoBehaviour {
 		transform.rotation = Quaternion.Slerp (transform.rotation, rotation, Time.deltaTime * rotationSpeed);
 	}
 	//Move around player Function
-	void MoveAroundPlayer(){
-		hideSpotPos = Random.insideUnitSphere * walkAroundRadius;
-		hideSpotPos = playerPos.position - hideSpotPos;
-		hideSpotPos.y = 0f;
-		myNav.SetDestination (hideSpotPos);
-
-	}
 	void CheckCover(){
 		float minDistance = 1000;
 		float HidingSpotDistance;
