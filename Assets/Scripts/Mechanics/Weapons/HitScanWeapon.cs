@@ -32,6 +32,9 @@ public class HitScanWeapon : Weapon {
     [Tooltip("Rate at which the spread range decreases automatically each frame. Only applied when not shooting.")]
     public float spreadRangeSlowdownRateWhenNotShooting = 2;
 
+    public AudioSource weaponAudioSource;
+    public AudioClip shootSfx;
+
     /// <summary>
     /// For how long the player has been shooting consecutively, caps at the value of timeShootingUntilMaxSpreadRange.
     /// </summary>
@@ -158,6 +161,11 @@ public class HitScanWeapon : Weapon {
         if (animator != null)
         {
             animator.SetTrigger("fired");
+        }
+        if (weaponAudioSource != null && shootSfx != null)
+        {
+            weaponAudioSource.clip = shootSfx;
+            weaponAudioSource.Play();
         }
     }
 

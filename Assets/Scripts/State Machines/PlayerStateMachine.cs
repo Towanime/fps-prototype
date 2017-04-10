@@ -17,6 +17,7 @@ public class PlayerStateMachine : MonoBehaviour {
     public AnimationsManager animationsManager;
     public Crosshair crosshair;
     public Collider playerCollider;
+    public PlayerStates startingState = PlayerStates.Booting;
 
     private StateMachine<PlayerStates> fsm;
     private StateMachine<MovementStates> movementStateMachine;
@@ -26,7 +27,7 @@ public class PlayerStateMachine : MonoBehaviour {
     void Awake()
     {
         movementStateMachine = GetComponent<MovementStateMachine>().StateMachine;
-        fsm = StateMachine<PlayerStates>.Initialize(this, PlayerStates.Booting);
+        fsm = StateMachine<PlayerStates>.Initialize(this, startingState);
     }
 
     void Booting_Enter()
