@@ -193,11 +193,11 @@ public class AnimationsManager : MonoBehaviour {
 			synergyShell.GetComponent<Animator> ().speed = 1;
 		}
 		//ammo circle spawn
-		if (meterCircle.ammoNeedsReload == false && meterCircle.meterAmount != 20) {
+		if (meterCircle.ammoNeedsReload == false && meterCircle.meterAmount != meterCircle.meterMaxAmount) {
 
 			ammoCircle.GetComponent<Animator> ().speed = 1;
 		}
-		if (meterCircle.ammoNeedsReload == true && meterCircle.meterAmount == 20) {
+		if (meterCircle.ammoNeedsReload == true && meterCircle.meterAmount == meterCircle.meterMaxAmount) {
 
 			meterCircle.ammoNeedsReload = false;
 			ammoCircle.GetComponent<Animator> ().speed = 1;
@@ -240,4 +240,9 @@ public class AnimationsManager : MonoBehaviour {
 			introActiveInTop = 3;
 		}
 	}
+
+    public bool HasIntroFinished()
+    {
+        return loadingBar.loadingBarDimensions.x >= 1420f;
+    }
 }

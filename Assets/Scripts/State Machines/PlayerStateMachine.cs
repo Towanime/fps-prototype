@@ -14,6 +14,9 @@ public class PlayerStateMachine : MonoBehaviour {
     public GameObject player;
     public float dashingDuration;
     public float dashingMaxSpeed;
+    public AnimationsManager animationsManager;
+    public Crosshair crosshair;
+    public Collider playerCollider;
 
     private StateMachine<PlayerStates> fsm;
     private StateMachine<MovementStates> movementStateMachine;
@@ -23,12 +26,36 @@ public class PlayerStateMachine : MonoBehaviour {
     void Awake()
     {
         movementStateMachine = GetComponent<MovementStateMachine>().StateMachine;
-        fsm = StateMachine<PlayerStates>.Initialize(this, PlayerStates.Default);
+        fsm = StateMachine<PlayerStates>.Initialize(this, PlayerStates.Booting);
+    }
+
+    void Booting_Enter()
+    {
+        movementStateMachine.ChangeState(MovementStates.InputDisabled);
+        crosshair.enabled = false;
+        playerCollider.enabled = false;
+    }
+
+    void Booting_Update()
+    {
+        if (animationsManager.HasIntroFinished())
+        {
+            fsm.ChangeState(PlayerStates.Default);
+        }
     }
 
     void Default_Enter()
     {
         movementStateMachine.ChangeState(MovementStates.Default);
+        crosshair.enabled = true;
+        playerCollider.enabled = true;
+        ActivateSynergy();
+    }
+
+    void ActivateSynergy()
+    {
+        synergy.active = true;
+        animationsManager.synergyBarSpawn = true;
     }
 
     void Default_Update()
@@ -56,6 +83,7 @@ public class PlayerStateMachine : MonoBehaviour {
     private void UpdateSynergyInput()
     {
         synergy.CurrentState = playerInput.synergy ? Synergy.SynergyState.DEPLETING : Synergy.SynergyState.RECOVERING;
+        animationsManager.synergyActive = synergy.CurrentState == Synergy.SynergyState.DEPLETING;
     }
 
     void Reloading_Enter()

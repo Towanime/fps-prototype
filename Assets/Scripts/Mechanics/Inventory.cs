@@ -8,7 +8,7 @@ public class Inventory : MonoBehaviour {
 
     private Dictionary<WeaponType, Weapon> weapons = new Dictionary<WeaponType, Weapon>();
 
-    void Start()
+    void Awake()
     {
         weapons.Add(WeaponType.HitScan, GetComponent<HitScanWeapon>());
     }

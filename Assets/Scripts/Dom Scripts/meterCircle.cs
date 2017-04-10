@@ -7,18 +7,26 @@ using UnityEngine.UI;
 public class MeterCircle : MonoBehaviour {
 
 	public Text meterText;
-	public int meterAmount = 20;
-	private float meterFillAdjust;
-	public string meterTextMax;
+    public int meterMaxAmount = 20;
 	public bool ammoNeedsReload = false;
 
-	void Update () {
+    public int meterAmount;
+	private float meterFillAdjust;
+    private string meterTextMax;
 
-		meterFillAdjust = 0.05f * meterAmount;
+    private void Awake()
+    {
+        SetMeterMaxAmount(meterMaxAmount);
+    }
+
+    void Update () {
+
+		meterFillAdjust = meterAmount / (float) meterMaxAmount;
 		this.GetComponent<Image> ().fillAmount = meterFillAdjust;
 
-		if (meterAmount >= 20){
-			meterAmount = 20;
+		if (meterAmount >= meterMaxAmount)
+        {
+			meterAmount = meterMaxAmount;
 		}
 
 		if (meterAmount <= 0){
@@ -40,5 +48,12 @@ public class MeterCircle : MonoBehaviour {
 	public void CircleReset() {
 		this.GetComponent<Animator> ().speed = 0f;
 		this.GetComponent<Animator> ().Play ("AmmoCircle", 0, 0);
-	}
+    }
+
+    public void SetMeterMaxAmount(int maxAmount)
+    {
+        meterMaxAmount = maxAmount;
+        meterAmount = meterMaxAmount;
+        meterTextMax = meterMaxAmount.ToString();
+    }
 }
