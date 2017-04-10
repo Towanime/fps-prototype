@@ -10,6 +10,8 @@ public class EnemyScope : MonoBehaviour {
 	public float Range;
 	public GameObject[] playerHitpoints;
 	public bool canAttack;
+    public LayerMask ignoreRaycast;
+
 	// Use this for initialization
 	void Start(){
 		Range = myEnemy.Range;
@@ -37,7 +39,7 @@ public class EnemyScope : MonoBehaviour {
 		for(int i = 0; i < playerHitpoints.Length;i++){
 			Vector3 Dir;
 			Dir = playerHitpoints [i].transform.position - transform.position; // setting direction betwwen the initial position of the camera and the player
-			if (Physics.Raycast (transform.position, Dir, out hit, playerDistance + 3)) {//doing first raycast detecting objects between the player and the camera
+			if (Physics.Raycast (transform.position, Dir, out hit, playerDistance + 3, ~ignoreRaycast)) {//doing first raycast detecting objects between the player and the camera
 
 				if (hit.collider.tag == "Player") {
 					Debug.DrawRay (transform.position, Dir);
