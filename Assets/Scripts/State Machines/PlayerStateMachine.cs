@@ -38,7 +38,7 @@ public class PlayerStateMachine : MonoBehaviour {
 
     void Booting_Update()
     {
-        if (animationsManager.HasIntroFinished())
+        if (animationsManager.introFinished)
         {
             fsm.ChangeState(PlayerStates.Default);
         }

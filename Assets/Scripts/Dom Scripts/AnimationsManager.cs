@@ -11,8 +11,9 @@ public class AnimationsManager : MonoBehaviour {
 	public bool synergyActive = false;
 	public bool getHit = false;
 	public bool synergyBarSpawn = false;
+    public bool introFinished = false;
 
-	public SynergyEffect synergyEffect;
+    public SynergyEffect synergyEffect;
 	public MeterCircle meterCircle;
 
 	public LoadingBar loadingBar;
@@ -240,9 +241,4 @@ public class AnimationsManager : MonoBehaviour {
 			introActiveInTop = 3;
 		}
 	}
-
-    public bool HasIntroFinished()
-    {
-        return loadingBar.loadingBarDimensions.x >= 1420f;
-    }
 }
