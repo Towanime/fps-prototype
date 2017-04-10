@@ -175,9 +175,9 @@ public class HitScanWeapon : Weapon {
         Debug.Log(gameObject + "Bullet from hitscan weapon hit: " + other);
         if (bulletContactPointPrefab != null)
         {
-            GameObject instance = Instantiate(bulletContactPointPrefab, hit.point, Quaternion.Euler(0, 0, 0));
             if (other.isStatic)
             {
+                GameObject instance = Instantiate(bulletContactPointPrefab, hit.point, Quaternion.Euler(0, 0, 0));
                 instance.transform.parent = other.transform;
             }
         }
