@@ -12,6 +12,7 @@ public class AnimationsManager : MonoBehaviour {
 	public bool getHit = false;
 	public bool synergyBarSpawn = false;
     public bool introFinished = false;
+	public float delayAnim = 0.2f;
 
     public SynergyEffect synergyEffect;
 	public MeterCircle meterCircle;
@@ -211,27 +212,8 @@ public class AnimationsManager : MonoBehaviour {
 			introActiveInTop = 5;
 		} 
 		if (introActiveTop == 5) {
-			outerLinesLeft.GetComponent<Animator> ().Play ("OuterLinesLeftHit", 0, 0);
-			outerLinesLeft.GetComponent<Animator> ().speed = 1f;
 
-			outerLinesRight.GetComponent<Animator> ().Play ("OuterLinesRightHit", 0, 0);
-			outerLinesRight.GetComponent<Animator> ().speed = 1f;
-
-			outerLinesTopLeft.GetComponent<Animator> ().Play ("OuterLinesTopLeftHit", 0, 0);
-			outerLinesTopLeft.GetComponent<Animator> ().speed = 1f;
-
-			outerLinesTopRight.GetComponent<Animator> ().Play ("OuterLinesTopRightHit", 0, 0);
-			outerLinesTopRight.GetComponent<Animator> ().speed = 1f;
-
-			innerLinesLeft.GetComponent<Animator> ().Play ("InnerLinesLeftHit", 0, 0);
-			innerLinesLeft.GetComponent<Animator> ().speed = 1f;
-
-			innerLinesRight.GetComponent<Animator> ().Play ("InnerLinesRightHit", 0, 0);
-			innerLinesRight.GetComponent<Animator> ().speed = 1f;
-
-			introActiveBot = 6;
-			introActiveTop = 6;
-			introActiveInTop = 6;
+			StartCoroutine(PlayDamage ());
 		}
 		if (getHit == false && introActiveBot == 6) {
 
@@ -240,5 +222,34 @@ public class AnimationsManager : MonoBehaviour {
 			introActiveTop = 3;
 			introActiveInTop = 3;
 		}
+	}
+	IEnumerator PlayDamage () {
+		outerLinesLeft.GetComponent<Animator> ().Play ("OuterLinesLeftHit", 0, 0);
+		outerLinesLeft.GetComponent<Animator> ().speed = 1f;
+
+		outerLinesRight.GetComponent<Animator> ().Play ("OuterLinesRightHit", 0, 0);
+		outerLinesRight.GetComponent<Animator> ().speed = 1f;
+
+		outerLinesTopLeft.GetComponent<Animator> ().Play ("OuterLinesTopLeftHit", 0, 0);
+		outerLinesTopLeft.GetComponent<Animator> ().speed = 1f;
+
+		outerLinesTopRight.GetComponent<Animator> ().Play ("OuterLinesTopRightHit", 0, 0);
+		outerLinesTopRight.GetComponent<Animator> ().speed = 1f;
+
+		innerLinesLeft.GetComponent<Animator> ().Play ("InnerLinesLeftHit", 0, 0);
+		innerLinesLeft.GetComponent<Animator> ().speed = 1f;
+
+		innerLinesRight.GetComponent<Animator> ().Play ("InnerLinesRightHit", 0, 0);
+		innerLinesRight.GetComponent<Animator> ().speed = 1f;
+
+		introActiveBot = 6;
+		introActiveTop = 6;
+		introActiveInTop = 6;
+
+		yield return new WaitForSeconds (delayAnim);
+
+		if (getHit == true && introActiveBot == 6) {
+			StartCoroutine(PlayDamage ());
+		} 
 	}
 }
