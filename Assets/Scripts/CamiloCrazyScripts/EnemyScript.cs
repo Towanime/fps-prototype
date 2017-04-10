@@ -102,7 +102,6 @@ public class EnemyScript : MonoBehaviour {
 			myAnimator.SetBool ("Punch", false);
 		}
 		myAnimator.SetBool ("Walk", false);
-		myAnimator.SetBool ("Death", false);
 	}
 	//Idle
 
