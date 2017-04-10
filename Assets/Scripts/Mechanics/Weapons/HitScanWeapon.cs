@@ -175,7 +175,11 @@ public class HitScanWeapon : Weapon {
         Debug.Log(gameObject + "Bullet from hitscan weapon hit: " + other);
         if (bulletContactPointPrefab != null)
         {
-            Instantiate(bulletContactPointPrefab, hit.point, Quaternion.Euler(0, 0, 0));
+            GameObject instance = Instantiate(bulletContactPointPrefab, hit.point, Quaternion.Euler(0, 0, 0));
+            if (other.isStatic)
+            {
+                instance.transform.parent = other.transform;
+            }
         }
         DamageableEntity damageableEntity;
         if (Util.IsObjectInLayerMask(targetLayerMask, other) &&

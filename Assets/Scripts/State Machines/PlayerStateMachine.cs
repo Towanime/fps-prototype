@@ -23,11 +23,13 @@ public class PlayerStateMachine : MonoBehaviour {
     private StateMachine<MovementStates> movementStateMachine;
     private float stateEnterTime;
     private Vector3 dashDirection;
+    private CharacterController characterController;
 
     void Awake()
     {
         movementStateMachine = GetComponent<MovementStateMachine>().StateMachine;
         fsm = StateMachine<PlayerStates>.Initialize(this, startingState);
+        characterController = player.GetComponent<CharacterController>();
     }
 
     void Booting_Enter()
@@ -133,7 +135,10 @@ public class PlayerStateMachine : MonoBehaviour {
         float speedDelta = dashingSpeedCurve.Evaluate((Time.time - stateEnterTime) / dashingDuration);
         float currentSpeed = Mathf.Lerp(0, dashingMaxSpeed, speedDelta);
 
-        player.transform.Translate(dashDirection * currentSpeed * Time.deltaTime, Space.World);
+        Vector3 distanceToMove = dashDirection * currentSpeed * Time.deltaTime;
+        Vector3 nextPosition = distanceToMove + player.transform.position;
+        characterController.Move(distanceToMove);
+
         if (t >= 1)
         {
             fsm.ChangeState(PlayerStates.Default);
