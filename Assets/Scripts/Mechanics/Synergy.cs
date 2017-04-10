@@ -6,13 +6,18 @@ public class Synergy : MonoBehaviour {
 
     public bool active;
     public float maxAmount = 100;
-    public float recoverRate;
-    public float recoverRateMultiplier = 1;
-    public float depleteRate;
-    public float depleteRateMultiplier = 1;
-    public bool recovering;
-    public bool depleting;
+    public float recoverRate = 10;
+    public float depleteRate = 10;
+    public float overheatRecoveryRate = 5;
+    private bool overheated;
+    private SynergyState currentState = SynergyState.RECOVERING;
     public float currentAmount;
+
+    public enum SynergyState
+    {
+        RECOVERING,
+        DEPLETING
+    }
 
     void Start()
     {
@@ -21,19 +26,28 @@ public class Synergy : MonoBehaviour {
 
     void Update()
     {
-        if (recovering)
+        if (currentState == SynergyState.RECOVERING)
         {
-            Recover(recoverRate * recoverRateMultiplier * Time.deltaTime);
-        }
-        if (depleting)
+            float currentRecoveryRate = overheated ? overheatRecoveryRate : recoverRate;
+            Recover(currentRecoveryRate * Time.deltaTime);
+            if (currentAmount == maxAmount)
+            {
+                Overheated = false;
+            }
+        } else if (currentState == SynergyState.DEPLETING)
         {
-            Consume(depleteRate * depleteRateMultiplier * Time.deltaTime);
+            bool consumed = Consume(depleteRate * Time.deltaTime);
+            if (!consumed)
+            {
+                currentAmount = 0;
+                Overheated = true;
+            }
         }
     }
 
     public bool Consume(float amount)
     {
-        if (!active)
+        if (!active || overheated)
         {
             return false;
         }
@@ -43,15 +57,15 @@ public class Synergy : MonoBehaviour {
             return false;
         }
         currentAmount -= absAmount;
+        if (currentAmount == 0)
+        {
+            Overheated = true;
+        }
         return true;
     }
 
     public void Recover(float amount)
     {
-        if (!active)
-        {
-            return;
-        }
         float absAmount = Mathf.Abs(amount);
         currentAmount = Mathf.Min(maxAmount, currentAmount + absAmount);
     }
@@ -63,11 +77,38 @@ public class Synergy : MonoBehaviour {
 
     public bool ConsumeAll()
     {
-        if (!active)
+        if (!active || overheated)
         {
             return false;
         }
         currentAmount = 0;
+        Overheated = true;
         return true;
+    }
+
+    public bool Overheated
+    {
+        get { return overheated; }
+        set {
+            overheated = value;
+            if (overheated)
+            {
+                CurrentState = SynergyState.RECOVERING;
+            }
+        }
+    }
+
+    public SynergyState CurrentState
+    {
+        get { return currentState; }
+        set {
+            if (value == SynergyState.DEPLETING && overheated)
+            {
+                currentState = SynergyState.RECOVERING;
+            } else
+            {
+                currentState = value;
+            }
+        }
     }
 }

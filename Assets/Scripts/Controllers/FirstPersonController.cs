@@ -43,8 +43,6 @@ public class FirstPersonController : MonoBehaviour
     private bool m_Jumping;
     private AudioSource m_AudioSource;
 
-    public PlayerInput playerInput;
-
     [Tooltip("Difference in height between the character standing and the character crouching.")]
     public float crouchingHeightDifference = 0.8f;
     [Tooltip("How much height is added/reduced every frame when crouching/standing up.")]
@@ -146,11 +144,6 @@ public class FirstPersonController : MonoBehaviour
 
         m_MoveDir.x = desiredMove.x*speed;
         m_MoveDir.z = desiredMove.z*speed;
-
-        if (playerInput.synergy) {
-            m_MoveDir.z = desiredMove.z * speed * 4;
-        }
-
 
         if (m_CharacterController.isGrounded)
         {
