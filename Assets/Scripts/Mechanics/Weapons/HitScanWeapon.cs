@@ -147,6 +147,13 @@ public class HitScanWeapon : Weapon {
     private void ShootBullet()
     {
         Vector3 startPosition = Vector3.zero;
+
+        // hack
+        if (GetComponent<EnemyScript>() != null)
+        {
+            aimingTransform.LookAt(GameObject.FindGameObjectWithTag("Player").transform.position);
+        }
+
         Vector3 direction = Vector3.Slerp(aimingTransform.forward, Random.onUnitSphere, Mathf.Lerp(currentSpreadRange, 0f, accuracy));
 
         Debug.Log(gameObject + "Fired bullet from hitscan weapon");
