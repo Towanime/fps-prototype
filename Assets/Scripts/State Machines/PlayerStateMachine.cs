@@ -163,4 +163,9 @@ public class PlayerStateMachine : MonoBehaviour {
     {
         weaponAnimator.SetBool("reloading", false);
     }
+
+    public PlayerStates GetCurrentState()
+    {
+        return fsm.State;
+    }
 }
