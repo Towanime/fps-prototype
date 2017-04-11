@@ -14,6 +14,7 @@ public class PlayerStateMachine : MonoBehaviour {
     public GameObject player;
     public float dashingDuration;
     public float dashingMaxSpeed;
+    public int dashCost;
     public AnimationsManager animationsManager;
     public Crosshair crosshair;
     public Collider playerCollider;
@@ -74,12 +75,15 @@ public class PlayerStateMachine : MonoBehaviour {
         {
             inventory.GetCurrentWeapon().ShootContinuously();
         }
-        if (playerInput.threwShield)
+        if (playerInput.threwShield && synergy.CurrentState == Synergy.SynergyState.DEPLETING)
         {
             stationaryShieldPower.ThrowShield(synergy);
         } else if (playerInput.dashed && synergy.CurrentState == Synergy.SynergyState.DEPLETING)
         {
-            fsm.ChangeState(PlayerStates.Dashing);
+            if (synergy.Consume(dashCost))
+            {
+                fsm.ChangeState(PlayerStates.Dashing);
+            }
         }
     }
 
@@ -100,16 +104,19 @@ public class PlayerStateMachine : MonoBehaviour {
         UpdateSynergyInput();
         Debug.Log("Player reloading");
         // interrupt reloading if the player performs an action like switch weapon
-        if (playerInput.threwShield)
+        if (playerInput.threwShield && synergy.CurrentState == Synergy.SynergyState.DEPLETING)
         {
             bool thrown = stationaryShieldPower.ThrowShield(synergy);
             if (thrown)
             {
                 fsm.ChangeState(PlayerStates.Default);
             }
-        } else if (playerInput.dashed)
+        } else if (playerInput.dashed && synergy.CurrentState == Synergy.SynergyState.DEPLETING)
         {
-            fsm.ChangeState(PlayerStates.Dashing);
+            if (synergy.Consume(dashCost))
+            {
+                fsm.ChangeState(PlayerStates.Dashing);
+            }
         }
         AnimatorStateInfo animatorStateInfo = weaponAnimator.GetCurrentAnimatorStateInfo(0);
         if (animatorStateInfo.IsName("Reloading") && animatorStateInfo.normalizedTime >= 1)
