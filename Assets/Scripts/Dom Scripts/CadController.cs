@@ -89,6 +89,9 @@ public class CadController : MonoBehaviour {
 
 	void OnTriggerEnter(Collider collider){
 		if (positionState == 4) {
+
+            GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerStateMachine>().ActivateSynergy();
+
 			synergyToggle.enabled = true;
 			cadMesh = this.gameObject.GetComponentsInChildren<MeshRenderer> ();
 			foreach (MeshRenderer joint in cadMesh) {

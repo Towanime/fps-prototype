@@ -53,10 +53,9 @@ public class PlayerStateMachine : MonoBehaviour {
         movementStateMachine.ChangeState(MovementStates.Default);
         crosshair.enabled = true;
         playerCollider.enabled = true;
-        ActivateSynergy();
     }
 
-    void ActivateSynergy()
+    public void ActivateSynergy()
     {
         synergy.active = true;
         animationsManager.synergyBarSpawn = true;
@@ -89,8 +88,11 @@ public class PlayerStateMachine : MonoBehaviour {
 
     private void UpdateSynergyInput()
     {
-        synergy.CurrentState = playerInput.synergy ? Synergy.SynergyState.DEPLETING : Synergy.SynergyState.RECOVERING;
-        animationsManager.synergyActive = synergy.CurrentState == Synergy.SynergyState.DEPLETING;
+        if (synergy.active)
+        {
+            synergy.CurrentState = playerInput.synergy ? Synergy.SynergyState.DEPLETING : Synergy.SynergyState.RECOVERING;
+            animationsManager.synergyActive = synergy.CurrentState == Synergy.SynergyState.DEPLETING;
+        }
     }
 
     void Reloading_Enter()
