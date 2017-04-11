@@ -5,7 +5,6 @@ using UnityEngine;
 public class DoorCharge : MonoBehaviour
 {
     public Animator animator;
-    public PlayerInput playerInput;
     public Collider doorCollider;
     public PlayerStateMachine playerStateMachine;
     private bool triggered;
