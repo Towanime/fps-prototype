@@ -22,6 +22,8 @@ public class EnemyScript : MonoBehaviour {
 	public float EnemyCode;
 	private NavMeshAgent myNav;
 	public HitScanWeapon hitScan;
+	public EnemyHealth myHealth;
+	public float HidingLife;
 
 	//Charge variables
 	private Vector3 LastPlayerPos;
@@ -59,7 +61,7 @@ public class EnemyScript : MonoBehaviour {
 	}
 	void RunStates(){
 		playerDistance = Vector3.Distance (playerPos.position, transform.position);
-		if(canAttack && EnemyCode == 1 && playerDistance <= HidingRange && currentState != "isGettingCover"){
+		if(canAttack && EnemyCode == 1 && playerDistance <= HidingRange && currentState != "isGettingCover" && myHealth.currentLife <= HidingLife){
 			CheckCover ();
 		}
 		else if(canAttack && EnemyCode == 2 && playerDistance <= punchRange && currentState == "isAttacking"){
@@ -291,6 +293,7 @@ public class EnemyScript : MonoBehaviour {
 	}
 	//Move around player Function
 	void CheckCover(){
+		Debug.Log ("funciona!");
 		float minDistance = 1000;
 		float HidingSpotDistance;
 		float playerToHideDistance;
@@ -303,7 +306,11 @@ public class EnemyScript : MonoBehaviour {
 			}
 		}
 		if (minDistance < 1000) {
-			StartGetCover ();
+			bool checkpath;
+			NavMeshPath myPath = new NavMeshPath();
+			checkpath = myNav.CalculatePath (hideSpotPos, myPath);
+			if(myPath.status == NavMeshPathStatus.PathComplete)
+				StartGetCover ();
 		}
 	}
 	//Public functions
