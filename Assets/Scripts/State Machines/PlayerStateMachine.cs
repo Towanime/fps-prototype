@@ -74,10 +74,10 @@ public class PlayerStateMachine : MonoBehaviour {
         {
             inventory.GetCurrentWeapon().ShootContinuously();
         }
-        if (playerInput.threwShield && synergy.CurrentState == Synergy.SynergyState.DEPLETING)
+        if (playerInput.threwShield)
         {
             stationaryShieldPower.ThrowShield(synergy);
-        } else if (playerInput.dashed && synergy.CurrentState == Synergy.SynergyState.DEPLETING)
+        } else if (playerInput.dashed)
         {
             if (synergy.Consume(dashCost))
             {
@@ -106,14 +106,14 @@ public class PlayerStateMachine : MonoBehaviour {
         UpdateSynergyInput();
         Debug.Log("Player reloading");
         // interrupt reloading if the player performs an action like switch weapon
-        if (playerInput.threwShield && synergy.CurrentState == Synergy.SynergyState.DEPLETING)
+        if (playerInput.threwShield)
         {
             bool thrown = stationaryShieldPower.ThrowShield(synergy);
             if (thrown)
             {
                 fsm.ChangeState(PlayerStates.Default);
             }
-        } else if (playerInput.dashed && synergy.CurrentState == Synergy.SynergyState.DEPLETING)
+        } else if (playerInput.dashed)
         {
             if (synergy.Consume(dashCost))
             {

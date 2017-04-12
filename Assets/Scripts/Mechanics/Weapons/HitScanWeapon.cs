@@ -123,6 +123,11 @@ public class HitScanWeapon : Weapon {
 
     public override bool ShootContinuously()
     {
+        if (!enabled)
+        {
+            return false;
+        }
+
         if (currentBulletCount <= 0)
         {
             Debug.Log(gameObject + "Needs to reload");
