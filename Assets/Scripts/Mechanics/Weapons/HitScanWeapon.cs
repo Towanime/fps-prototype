@@ -156,7 +156,12 @@ public class HitScanWeapon : Weapon {
         // hack
         if (GetComponent<EnemyScript>() != null)
         {
+            Quaternion currentRotation = aimingTransform.rotation;
             aimingTransform.LookAt(GameObject.FindGameObjectWithTag("Player").transform.position);
+            Quaternion lookAtRotation = aimingTransform.rotation;
+            Vector3 newRotation = currentRotation.eulerAngles;
+            newRotation.x = lookAtRotation.eulerAngles.x;
+            aimingTransform.rotation = Quaternion.Euler(newRotation);
         }
 
         Vector3 direction = Vector3.Slerp(aimingTransform.forward, Random.onUnitSphere, Mathf.Lerp(currentSpreadRange, 0f, accuracy));
